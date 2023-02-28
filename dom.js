@@ -12,14 +12,21 @@ let header = document.getElementById("main-header");
 // header.style.borderBottom = "solid 3px #000";
 
 
-document.getElementById("item").style.fontweight = "bold";
-document.getElementById("item").style.color = "green";
+// document.getElementById("item").style.fontweight = "bold";
+// document.getElementById("item").style.color = "green";
 
-//get elements by class name
-let items = document.getElementsByClassName("list-group-item");
+// //get elements by class name
+// let items = document.getElementsByClassName("list-group-item");
 
-items[2].style.backgroundColor = "green";
+// items[2].style.backgroundColor = "green";
 
-for(let i =0;i<items.length;i++){
-	items[i].style.color = "gold";
+// for(let i =0;i<items.length;i++){
+// 	items[i].style.color = "gold";
+// }
+
+//elements by tag name
+let li = document.getElementsByTagName("li");
+
+for(let i =0; i<li.length;i++){
+	li[i].style.backgroundColor = "grey";
 }
