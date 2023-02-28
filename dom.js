@@ -24,9 +24,25 @@ let header = document.getElementById("main-header");
 // 	items[i].style.color = "gold";
 // }
 
-//elements by tag name
-let li = document.getElementsByTagName("li");
+// //elements by tag name
+// let li = document.getElementsByTagName("li");
 
-for(let i =0; i<li.length;i++){
-	li[i].style.backgroundColor = "grey";
+// for(let i =0; i<li.length;i++){
+// 	li[i].style.backgroundColor = "grey";
+// }
+
+// QUERY SLECTOR
+// let secondItems = document.querySelector(".list-group-item:nth-child(2)");
+// secondItems.style.backgroundColor = "green";
+
+// let thirdItem = document.querySelector(".list-group-item:nth-child(3)");
+// thirdItem.style.color = "white";
+
+// QUERY SELECTOR ALL
+let items = document.querySelectorAll(".list-group-item");
+items[1].style.color = "green";
+
+let odd = document.querySelectorAll("li:nth-child(odd)");
+for(let i =0; i < odd.length; i++){
+	odd[i].style.backgroundColor = "green";
 }
