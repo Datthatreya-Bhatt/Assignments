@@ -5,10 +5,13 @@ function print(event){
 	let pas = document.getElementById("uPassword").value;
 	let dat = document.getElementById("date").value;
 	
-	localStorage.setItem('Name',`${user_name}`);
-	localStorage.setItem('Email',`${email}`);
-	localStorage.setItem('Password',`${pas}`);
-	localStorage.setItem('Date',`${dat}`);
-
+	let myobj = {
+		name : user_name,
+		email : email,
+		password : pas,
+		date : dat
+	}
+	let serialise = JSON.stringify(myobj);
+	localStorage.setItem("obj",serialise);
 
 }
