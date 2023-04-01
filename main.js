@@ -10,8 +10,21 @@ window.onload = ()=>{
 		for(let i =0;i<length;i++){
 			
 			let li = list(`${res.data[i].name}-${res.data[i].email}-${res.data[i].phoneNumber}`);
+			let id = res.data[i]._id;
 			
-		    li.appendChild(delbtn(()=>console.log('del clicked')));
+
+			let del = (id)=>{
+				axios.delete(`https://crudcrud.com/api/${base}/test/${id}`)
+				.then(
+					li.parentNode.removeChild(li))
+				.catch( rej => console.log(rej));
+			};
+		    
+		    let ed = ()=>{
+		    	console.log("edit clicked");
+		    }
+			
+		    li.appendChild(delbtn( ()=>{del(id)}));
 		    li.appendChild(editbtn( ()=>console.log('edit')));
 		    document.getElementById("listOfItems").appendChild(li);
 		    
@@ -74,15 +87,37 @@ function print(event){
 		email : `${email}`,
 		phoneNumber : `${phone}`,
 	})
-	.then( (res)=>{console.log(res)})
+	.then(()=>{axios.get(`https://crudcrud.com/api/${base}/test`)
+	.then((res)=>{
+			let last = res.data.length-1;
+			let li = list(`${res.data[last].name}-${res.data[last].email}-${res.data[last].phoneNumber}`);
+			let id = res.data[last]._id;
+
+			let del = (id)=>{
+				axios.delete(`https://crudcrud.com/api/${base}/test/${id}`)
+				.then(
+					li.parentNode.removeChild(li))
+				.catch( rej => console.log(rej));
+			};
+		    
+		    let ed = ()=>{
+		    	console.log("edit clicked");
+		    }
+
+
+
+
+		    li.appendChild(delbtn( ()=>{del(id)}));
+		    li.appendChild(editbtn(ed));
+		    document.getElementById("listOfItems").appendChild(li);
+		    
+		
+	})
+	.catch( (rej)=>{
+		console.log(rej);
+	})})
 	.catch( (rej)=>{console.log(rej)});
    	
-	let li = list(`${user_name}-${email}-${phone}`);
-    li.appendChild(delbtn(()=>console.log('del clicked')));
-    li.appendChild(editbtn( ()=>console.log('edit')));
-    document.getElementById("listOfItems").appendChild(li);
-
-
 
 
    
