@@ -1,4 +1,4 @@
-let base = '602d05af5b4b427fadced46549e517ed';
+let base = 'ed1fe119502b4092a014a4b9df3f678b';
 
 
 window.onload = ()=>{
@@ -19,13 +19,23 @@ window.onload = ()=>{
 					li.parentNode.removeChild(li))
 				.catch( rej => console.log(rej));
 			};
-		    
-		    let ed = ()=>{
-		    	console.log("edit clicked");
+		    let ed = (id)=>{
+		    	axios.get(`https://crudcrud.com/api/${base}/test/${id}`)
+		    	.then( (res)=>{
+		    		console.log(res);
+		    		document.getElementById("username").value = res.data.name;
+		    		document.getElementById("useremail").value = res.data.email;
+		    		document.getElementById("phone").value = res.data.phoneNumber;
+		    		li.parentNode.removeChild(li);
+		    		axios.delete(`https://crudcrud.com/api/${base}/test/${id}`)
+		    		.then( ()=>{console.log("edited")})
+		    		.catch( (rej)=>console.log(rej)); 
+		    	})
+		    	.catch( (rej)=>console.log(rej));
 		    }
 			
 		    li.appendChild(delbtn( ()=>{del(id)}));
-		    li.appendChild(editbtn( ()=>console.log('edit')));
+		    li.appendChild(editbtn( ()=>{ ed(id)}));
 		    document.getElementById("listOfItems").appendChild(li);
 		    
 		};
@@ -100,15 +110,25 @@ function print(event){
 				.catch( rej => console.log(rej));
 			};
 		    
-		    let ed = ()=>{
-		    	console.log("edit clicked");
+		    let ed = (id)=>{
+		    	axios.get(`https://crudcrud.com/api/${base}/test/${id}`)
+		    	.then( (res)=>{
+		    		document.getElementById("username").value = res.data.name;
+		    		document.getElementById("useremail").value = res.data.email;
+		    		document.getElementById("phone").value = res.data.phoneNumber;
+		    		li.parentNode.removeChild(li);
+		    		axios.delete(`https://crudcrud.com/api/${base}/test/${id}`)
+		    		.then( ()=>{console.log("edited")})
+		    		.catch( (rej)=>console.log(rej)); 
+		    	})
+		    	.catch( (rej)=>console.log(rej));
 		    }
 
 
 
 
 		    li.appendChild(delbtn( ()=>{del(id)}));
-		    li.appendChild(editbtn(ed));
+		    li.appendChild(editbtn( ()=>{ed(id)}));
 		    document.getElementById("listOfItems").appendChild(li);
 		    
 		
