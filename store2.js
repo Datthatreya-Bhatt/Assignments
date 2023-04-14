@@ -37,7 +37,7 @@ window.onload = async () =>{
 		btn.className = 'btn btn-primary';
 		btn.innerHTML = 'BUY 1';
 	
-		btn.onclick = async ()=>{
+		btn.addEventListener('click',async ()=>{
 				let qaunt = res.data[i].quantity;
 				let dif = 1;
 				if(qaunt>=dif){
@@ -53,13 +53,13 @@ window.onload = async () =>{
 					alert('error: quantity not available');
 				}
 			
-		}
+		})
 
 		let btn2 = document.createElement('button');
 		btn2.className = 'btn btn-primary';
 		btn2.innerHTML = 'BUY 2';
 
-		btn2.onclick = async ()=>{
+		btn2.addEventListener('click',async ()=>{
 				let qaunt = res.data[i].quantity;
 				let dif = 2;
 				if(qaunt>=dif){
@@ -74,13 +74,13 @@ window.onload = async () =>{
 				else{
 					alert('error: quantity not available');
 				}
-		}
+		})
 		
 		let btn3 = document.createElement('button');
 		btn3.className = 'btn btn-primary';
 		btn3.innerHTML = 'BUY 3';
 
-		btn3.onclick = async ()=>{
+		btn3.addEventListener('click',async ()=>{
 			let qaunt = res.data[i].quantity;
 			let dif = 3;
 			if(qaunt>=dif){
@@ -95,7 +95,8 @@ window.onload = async () =>{
 			else{
 				alert('error: quantity not available');
 			}
-		}
+		})
+
 		let btndiv2 = document.createElement('div');
 		btndiv2.className = 'col-md-1';
 		btndiv2.appendChild(btn3);
@@ -129,7 +130,7 @@ catch(err){
 }
 try{
 
-document.getElementById('button').onclick = click;
+document.getElementById('button').addEventListener('click',click);
 
 
 async function click(){
@@ -162,7 +163,7 @@ async function click(){
 		btn.className = 'btn btn-primary';
 		btn.innerHTML = 'BUY 1';
 
-		btn.onclick = async ()=>{
+		btn.addEventListener('click',async ()=>{
 				let qaunt = res.data[last].quantity;
 				let dif = 1;
 				if(qaunt>=dif){
@@ -178,13 +179,13 @@ async function click(){
 					alert('error: quantity not available');
 				}
 			
-		}
+		})
 
 		let btn2 = document.createElement('button');
 		btn2.className = 'btn btn-primary';
 		btn2.innerHTML = 'BUY 2';
 
-		btn2.onclick = async ()=>{
+		btn2.addEventListener('click',async ()=>{
 				let qaunt = res.data[last].quantity;
 				let dif = 2;
 				if(qaunt>=dif){
@@ -199,12 +200,13 @@ async function click(){
 				else{
 					alert('error: quantity not available');
 				}
-		}
+		})
+
 		let btn3 = document.createElement('button');
 		btn3.className = 'btn btn-primary';
 		btn3.innerHTML = 'BUY 3';
 
-		btn3.onclick = async ()=>{
+		btn3.addEventListener('click',async ()=>{
 				let qaunt = res.data[last].quantity;
 				let dif = 3;
 				if(qaunt>=dif){
@@ -220,7 +222,7 @@ async function click(){
 					alert('error: quantity not available');
 				}
 			
-		}
+		})
 		let btndiv2 = document.createElement('div');
 		btndiv2.className = 'col-md-1';
 		btndiv2.appendChild(btn3);
