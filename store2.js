@@ -1,6 +1,4 @@
-let endpoint = 'f645612d44c44e68bcadefa84af2f977';
-
-document.getElementById('button').onclick = click;
+let endpoint = 'c51ee9eafb47400f9487874576b82f3b';
 
 
 function div(className,type,inputClass,value){
@@ -16,8 +14,11 @@ function div(className,type,inputClass,value){
 
 	return div;
 }
+try{
+
 
 window.onload = async () =>{
+	
 	let res = await axios.get(`https://crudcrud.com/api/${endpoint}/test`);
 	let len = res.data.length;
 
@@ -30,13 +31,12 @@ window.onload = async () =>{
 		let div1 = div('col-md-2','text','form-control',res.data[i].item);
 		let div2 = div('col-md-2','text','form-control',res.data[i].description);
 		let div3 = div('col-md-2','text','form-control',res.data[i].quantity);
-
 		let div4 = div('col-md-2','text','form-control',res.data[i].rate);
 
 		let btn = document.createElement('button');
 		btn.className = 'btn btn-primary';
 		btn.innerHTML = 'BUY 1';
-
+	
 		btn.onclick = async ()=>{
 				let qaunt = res.data[i].quantity;
 				let dif = 1;
@@ -75,14 +75,39 @@ window.onload = async () =>{
 					alert('error: quantity not available');
 				}
 		}
+		
+		let btn3 = document.createElement('button');
+		btn3.className = 'btn btn-primary';
+		btn3.innerHTML = 'BUY 3';
+
+		btn3.onclick = async ()=>{
+			let qaunt = res.data[i].quantity;
+			let dif = 3;
+			if(qaunt>=dif){
+				await axios.put(`https://crudcrud.com/api/${endpoint}/test/${id}`,{
+					item:res.data[i].item,
+					description:res.data[i].description,
+					quantity:res.data[i].quantity-3,
+					rate:res.data[i].rate
+				})
+				location.reload();
+			}
+			else{
+				alert('error: quantity not available');
+			}
+		}
+		let btndiv2 = document.createElement('div');
+		btndiv2.className = 'col-md-1';
+		btndiv2.appendChild(btn3);
+
 		let btndiv1 = document.createElement('div');
-		btndiv1.className = 'col-md-2';
+		btndiv1.className = 'col-md-1';
 		btndiv1.appendChild(btn2);
 
 
 
 		let btndiv = document.createElement('div');
-		btndiv.className = 'col-md-2';
+		btndiv.className = 'col-md-1';
 		btndiv.appendChild(btn);
 
 		row.appendChild(div1);
@@ -91,12 +116,21 @@ window.onload = async () =>{
 		row.appendChild(div4);
 		row.appendChild(btndiv);
 		row.appendChild(btndiv1);
+		row.appendChild(btndiv2);
 
 		let container = document.getElementById('container');
 
 		container.appendChild(row);
 	}
 }
+}
+catch(err){
+	console.log(err);
+}
+try{
+
+document.getElementById('button').onclick = click;
+
 
 async function click(){
 	let item = document.getElementById('item').value;
@@ -122,7 +156,6 @@ async function click(){
 		let div1 = div('col-md-2','text','form-control',res.data[last].item);
 		let div2 = div('col-md-2','text','form-control',res.data[last].description);
 		let div3 = div('col-md-2','text','form-control',res.data[last].quantity);
-
 		let div4 = div('col-md-2','text','form-control',res.data[last].rate);
 
 		let btn = document.createElement('button');
@@ -167,14 +200,39 @@ async function click(){
 					alert('error: quantity not available');
 				}
 		}
+		let btn3 = document.createElement('button');
+		btn3.className = 'btn btn-primary';
+		btn3.innerHTML = 'BUY 3';
+
+		btn3.onclick = async ()=>{
+				let qaunt = res.data[last].quantity;
+				let dif = 3;
+				if(qaunt>=dif){
+					await axios.put(`https://crudcrud.com/api/${endpoint}/test/${id}`,{
+						item:res.data[last].item,
+						description:res.data[last].description,
+						quantity:res.data[last].quantity-3,
+						rate:res.data[last].rate
+					})
+					location.reload();
+				}
+				else{
+					alert('error: quantity not available');
+				}
+			
+		}
+		let btndiv2 = document.createElement('div');
+		btndiv2.className = 'col-md-1';
+		btndiv2.appendChild(btn3);
+
 		let btndiv1 = document.createElement('div');
-		btndiv1.className = 'col-md-2';
+		btndiv1.className = 'col-md-1';
 		btndiv1.appendChild(btn2);
 
 
 
 		let btndiv = document.createElement('div');
-		btndiv.className = 'col-md-2';
+		btndiv.className = 'col-md-1';
 		btndiv.appendChild(btn);
 
 		row.appendChild(div1);
@@ -183,10 +241,15 @@ async function click(){
 		row.appendChild(div4);
 		row.appendChild(btndiv);
 		row.appendChild(btndiv1);
+		row.appendChild(btndiv2);
 
 		let container = document.getElementById('container');
 
 		container.appendChild(row);
 	
 
+}
+}
+catch(err){
+	console.log(err);
 }
