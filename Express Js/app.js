@@ -9,6 +9,8 @@ const shopRoutes = require('./routes/shop');
 const contactRoutes = require('./routes/contactus');
 const successRoutes = require('./routes/success');
 
+const productController = require('./controller/error')
+
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static(path.join(__dirname,'public',)))
 
@@ -17,8 +19,6 @@ app.use('/shop',shopRoutes);
 app.use('/contactus',contactRoutes);
 app.use('/success',successRoutes);
 
-app.use((req,res,next)=>{
-    res.status(404).sendFile(path.join(__dirname,'views','pagenotfound.html'));
-});
+app.use(productController.useError);
 
 app.listen(3000);
