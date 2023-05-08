@@ -9,7 +9,7 @@ const shopRoutes = require('./routes/shop');
 const contactRoutes = require('./routes/contactus');
 const successRoutes = require('./routes/success');
 
-const productController = require('./controller/error')
+const productController = require('./controller/error.js')
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static(path.join(__dirname,'public',)))
@@ -21,4 +21,4 @@ app.use('/success',successRoutes);
 
 app.use(productController.useError);
 
-app.listen(3000);
+app.listen(4000);
