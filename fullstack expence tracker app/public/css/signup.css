@@ -13,3 +13,7 @@ form{
 .item{
     grid-area: 3/4/3/4;
 }
+
+body{
+    background-color: yellow;
+}
