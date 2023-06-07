@@ -16,6 +16,9 @@ document.getElementById('button').addEventListener('click',async()=>{
     else if(res.data === 'length'){
         alert('write proper name,email and password');
     }
+    else if (res.data === 'success'){
+        alert('signup succesfull')
+    }
 
     }catch(err){
         console.log(err);
