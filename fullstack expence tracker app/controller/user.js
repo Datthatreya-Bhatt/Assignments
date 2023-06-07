@@ -4,9 +4,6 @@ const bcrypt = require('bcrypt');
 
 
 
-const express = require('express');
-const app = express();
-
 const connection = mysql.createPool({
     host:'localhost',
     user: 'root',
@@ -43,9 +40,8 @@ exports.postData = (req,res,next)=>{
                                     res.status(500).send(err);
                                 }
                                 else{
-                                    console.log(1);
-                                    res.send('success');
-                                    
+                                    res.redirect('/user/login');
+                                    console.log(1); 
                                 }
                             })
                                 }
@@ -74,6 +70,7 @@ exports.getlogin = (req,res,next)=>{
 
 //to validate login page
 exports.postlogin = (req,res,next)=>{
+    console.log(req);
     const {email,password} = req.body;
     
     //to check password and email
@@ -90,7 +87,7 @@ exports.postlogin = (req,res,next)=>{
             let hash = result[0].password;
             bcrypt.compare(password,hash,(err,result)=>{
                if(result){
-                res.send('success');
+                    res.send(`${hash}`);
                }else{
                     res.send('incorrect');
                }

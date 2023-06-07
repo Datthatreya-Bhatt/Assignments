@@ -1,4 +1,5 @@
-document.getElementById('button').addEventListener('click',async()=>{
+document.getElementById('button').addEventListener('click',async(e)=>{
+    e.preventDefault();
     let name = document.getElementById('name').value;
     let email = document.getElementById('email').value;
     let password = document.getElementById('password').value;
@@ -16,10 +17,7 @@ document.getElementById('button').addEventListener('click',async()=>{
     else if(res.data === 'length'){
         alert('write proper name,email and password');
     }
-    else if (res.data === 'success'){
-        alert('signup succesfull')
-    }
-
+    
     }catch(err){
         console.log(err);
 
