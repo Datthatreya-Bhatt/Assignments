@@ -17,6 +17,10 @@ document.getElementById('button').addEventListener('click',async(e)=>{
     else if(res.data === 'length'){
         alert('write proper name,email and password');
     }
+    else if (res.data === 'success'){
+        alert('account created');
+        location.href = 'http://localhost:3000/user/login';
+    }
     
     }catch(err){
         console.log(err);

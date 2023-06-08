@@ -40,7 +40,7 @@ exports.postData = (req,res,next)=>{
                                     res.status(500).send(err);
                                 }
                                 else{
-                                    res.redirect('/user/login');
+                                    res.send('success');
                                     console.log(1); 
                                 }
                             })
@@ -70,7 +70,6 @@ exports.getlogin = (req,res,next)=>{
 
 //to validate login page
 exports.postlogin = (req,res,next)=>{
-    console.log(req);
     const {email,password} = req.body;
     
     //to check password and email
@@ -87,7 +86,7 @@ exports.postlogin = (req,res,next)=>{
             let hash = result[0].password;
             bcrypt.compare(password,hash,(err,result)=>{
                if(result){
-                    res.send(`${hash}`);
+                    res.status(201).send('success');
                }else{
                     res.send('incorrect');
                }

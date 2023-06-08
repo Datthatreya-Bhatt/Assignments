@@ -10,9 +10,13 @@ document.getElementById('button').addEventListener('click',async()=>{
             
         if(res.data === 'incorrect'){
             alert('Email or Password is incorrect');
-        }else{
-            let id = res.data;
-            location.href = `http://localhost:3000/${id}/expense`;  
+        }else if(res.status === 201){
+            location.href = 'http://localhost:3000/expense';
+            alert('success');
+        }
+        else{
+            alert('status not found');
+            console.log(res);
         }
 
     }catch(err){
