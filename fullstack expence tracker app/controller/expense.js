@@ -1,60 +1,97 @@
 const path = require('path');
 const bcrypt = require('bcrypt');
-const mysql = require('mysql2');
 
-let connection = mysql.createPool({
-    host:'localhost',
-    user: 'root',
-    password:'1pl@teGolibaje',
-    database:'expense'
-});
+const {Expense} = require('../model/database');
 
 
 //For showing expense page
 exports.getData= (req,res,next)=>{
     res.status(200).sendFile(path.join(__dirname,'../','public','expense.html'));
+
 };
 
-exports.getExpenseData = (req,res,next)=>{
-    connection.query('SELECT * FROM expense.userexpense',
-    (err,result)=>{
-        if(err){
-            res.send(err);
-        }
-        else{
-            res.send(result);
-            
-        }
-    });
-};
+exports.getExpenseData = async (req,res,next)=>{
+   
+    console.log('line 14 >>>>>',req.userID);
+    let id = req.userID;
+    
+    try{
 
-
-exports.postData = (req,res,next)=>{
-    let {amount,description,category} = req.body;
-    if(amount.length>0 && description.length>0 && category.length>0){
-        connection.query(`INSERT INTO expense.userexpense(amount,description,category) VALUES(?,?,?)`,
-        [amount,description,category],
-        (err,result)=>{
-            if(err){
-                res.send(err);
-            }
-            else{
-                res.send('success from postData');
+        const user = await Expense.findAll({
+            where:{
+                userId:id
             }
         });
+        if(user){
+            res.send(user);
+            console.log(' expense control line 27',user);
+        }
+        else{
+            res.send('fail')
+            console.log('expense control line 31',user);
+        }
+    
+    }catch(err){
+        console.error(err);
+    }
+
+
+};
+
+
+exports.postData = async (req,res,next)=>{
+    let {amount,description,category} = req.body;
+
+    if(amount.length>0 && description.length>0 && category.length>0){
+        let id = req.userID;
+        try{
+            const user = await Expense.create(
+                {
+                    amount:amount,
+                    description:description,
+                    category: category,
+                    userId : id
+                }
+            )
+            if(user){
+                res.send('success from postData');
+            }
+            else{
+                res.send('expense/postData error');
+            }
+
+        }catch(err){
+            console.error(err);
+        }
+
     }
 };
 
-exports.deleteData = (req,res,next)=>{
-    let id = req.params.id;
-    console.log(id);
-    connection.query(`DELETE FROM userexpense WHERE id=${id} `,
-    (err,result)=>{
-        if(err){
-            res.send(err);
+exports.deleteData = async (req,res,next)=>{
+    let id = req.userID;
+    let product = req.params.id;
+    
+    try{
+        const user = await Expense.destroy({
+            where:{
+                userId:id,
+                id:product
+            }
+        });
+
+        if(user){
+            res.send('success');
+        }else{
+            res.send('fail');
         }
-        else{
-            res.send('success from deleteData');
-        }
-    });
+
+    }
+    catch(err){
+        console.error(err);
+    };
+
+
+
+
+
 };

@@ -11,8 +11,17 @@ document.getElementById('button').addEventListener('click',async()=>{
         if(res.data === 'incorrect'){
             alert('Email or Password is incorrect');
         }else if(res.status === 201){
+            localStorage.setItem('token',res.data);
+            
+
+            let token = localStorage.getItem('token');
+            axios.defaults.headers.common['Authorization'] =`${token}`;
+            
+            // let ax = await axios.get('http://localhost:3000/expense');
+            // document.write(ax.data);
             location.href = 'http://localhost:3000/expense';
-            alert('success');
+            
+
         }
         else{
             alert('status not found');

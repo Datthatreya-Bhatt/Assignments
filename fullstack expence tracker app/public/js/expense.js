@@ -1,5 +1,10 @@
+
+let token = localStorage.getItem('token');
+axios.defaults.headers.common['Authorization'] = token;
+console.log(token);
+
+
 window.onload = async()=>{
-   
     try{
     let res = await axios.get('http://localhost:3000/expense/data');
     console.log(res);
