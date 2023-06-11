@@ -2,6 +2,8 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const sk = require('../credentials/jwtSecret');
+
 const {User} = require('../model/database'); 
 
 //For showing signup page
@@ -102,7 +104,7 @@ exports.postlogin = async(req,res,next)=>{
                         })
                         if(user){
                             let id = user.dataValues.id;
-                            let token = jwt.sign({id:id},'secretKey');
+                            let token = jwt.sign({id:id},sk);
                             res.status(201).send(token);
                             
                         }else{

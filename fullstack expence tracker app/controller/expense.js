@@ -12,7 +12,7 @@ exports.getData= (req,res,next)=>{
 
 exports.getExpenseData = async (req,res,next)=>{
    
-    console.log('line 14 >>>>>',req.userID);
+    // console.log('line 14 >>>>>',req.userID);
     let id = req.userID;
     
     try{
@@ -24,7 +24,7 @@ exports.getExpenseData = async (req,res,next)=>{
         });
         if(user){
             res.send(user);
-            console.log(' expense control line 27',user);
+            // console.log(' expense control line 27',user);
         }
         else{
             res.send('fail')

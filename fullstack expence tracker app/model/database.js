@@ -1,7 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const password = require('../credentials/mysql');
 
 
-const sequelize = new Sequelize('expense', 'root', '1pl@teGolibaje', {
+const sequelize = new Sequelize('expense', 'root', password, {
     host: 'localhost',
     dialect: 'mysql',
   });
@@ -64,11 +65,25 @@ const Expense = sequelize.define('userexepense', {
   });
   
 
+const Orders = sequelize.define('orders',{
+    id:{
+        type: DataTypes.INTEGER,
+        autoIncrement:true,
+        unique:true,
+        primaryKey:true,
+        allowNull:false
+    },
+    paymentid:DataTypes.STRING,
+    orderid:DataTypes.STRING,
+    status:DataTypes.STRING
+
+});
+
 
 // Create the table in the database
 async function createTable(obj) {
   try {
-    await obj.sync({ force: false });
+    await obj.sync({ force: true });
     console.log('Table created successfully.');
   } catch (error) {
     console.error('Unable to create table:', error);
@@ -79,10 +94,21 @@ async function createTable(obj) {
 User.hasMany(Expense,{foreignKey: 'userId'});
 Expense.belongsTo(User,{foreignKey:'userId'});
 
-createTable(User);
-createTable(Expense);
+User.hasMany(Orders);
+Orders.belongsTo(User);
+
+let ex = async()=>{
+    await createTable(User);
+    await createTable(Expense);
+    await createTable(Orders);
+}
+
+ex();
+
+
 
 module.exports = {
     User:User,
-    Expense:Expense
+    Expense:Expense,
+    Orders: Orders
 };

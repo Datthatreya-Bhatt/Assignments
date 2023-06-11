@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const sk = require('../credentials/jwtSecret');
 
 exports.auth = (req,res,next)=>{
     
@@ -6,7 +7,7 @@ exports.auth = (req,res,next)=>{
     
 
 
-    jwt.verify(`${token}`,'secretKey',(err,decode)=>{
+    jwt.verify(`${token}`,sk,(err,decode)=>{
         if(err){
             console.error("errorr at auth 11 >>>>>>",err);
             res.redirect('/user/login');
