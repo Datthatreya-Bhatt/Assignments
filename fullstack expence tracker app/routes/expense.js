@@ -9,5 +9,6 @@ router.get('/expense/data',auth.auth,expense.getExpenseData );
 router.get('/expense',expense.getData);
 router.post('/expense/data',auth.auth,expense.postData);
 router.delete('/expense/:id',auth.auth,expense.deleteData);
+router.get('/ispremium',auth.auth,expense.isPremium);
 
 module.exports = router;

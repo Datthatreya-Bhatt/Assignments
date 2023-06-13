@@ -17,8 +17,7 @@ document.getElementById('button').addEventListener('click',async()=>{
             let token = localStorage.getItem('token');
             axios.defaults.headers.common['Authorization'] =`${token}`;
             
-            // let ax = await axios.get('http://localhost:3000/expense');
-            // document.write(ax.data);
+          
             location.href = 'http://localhost:3000/expense';
             
 

@@ -83,7 +83,7 @@ const Orders = sequelize.define('orders',{
 // Create the table in the database
 async function createTable(obj) {
   try {
-    await obj.sync({ force: true });
+    await obj.sync({ force: false });
     console.log('Table created successfully.');
   } catch (error) {
     console.error('Unable to create table:', error);
@@ -91,8 +91,8 @@ async function createTable(obj) {
 }
 
 
-User.hasMany(Expense,{foreignKey: 'userId'});
-Expense.belongsTo(User,{foreignKey:'userId'});
+User.hasMany(Expense);
+Expense.belongsTo(User);
 
 User.hasMany(Orders);
 Orders.belongsTo(User);

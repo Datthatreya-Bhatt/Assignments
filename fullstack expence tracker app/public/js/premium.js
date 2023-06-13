@@ -1,22 +1,13 @@
+
 let token = localStorage.getItem('token');
 axios.defaults.headers.common['Authorization'] = token;
-// console.log(token);
 
-let temp = async()=>{
-    let res = await axios.get('http://localhost:3000/ispremium');
-    console.log(res);
-    if(res.data ==="PREMIUM"){
-        location.href = 'http://localhost:3000/user/premium';
-    }
-}
-temp();
+
 
 window.onload = async()=>{
-        
-   
     try{
     let res = await axios.get('http://localhost:3000/expense/data');
-    // console.log(res);
+    
     let length = res.data.length;
     for(let i = 0;i<length;i++){
         let id = res.data[i].id;
@@ -71,51 +62,20 @@ document.getElementById('button').addEventListener('click',async()=>{
 
 
 
-document.getElementById('purchase').addEventListener('click',async()=>{
+document.getElementById('btn').addEventListener('click',async()=>{
+    
     try{
         
-        let res = await axios.get('http://localhost:3000/purchasepremium');
+        let res = await axios.get('http://localhost:3000/user/premium/leaderboard');
         console.log('res',res);
-        let options ={
-            "key": res.data.key,
-            "order_id": res.data.id,
-            "handler": async(res)=>{
-                try{   
+        
+               
                     
-                        await axios.post('http://localhost:3000/success/purchase',{
-                            res:res 
-                        })
-
-                        location.href = 'http://localhost:3000/user/premium';
-
-                    }catch(err){
-                        console.log(err);
-                    }
-
-                    
-
-                
-              
-            }
-        }
-        const rzpl = new Razorpay(options);
-        rzpl.open();
-
-        rzpl.on('payment.failed',async(res)=>{
-            try{   
-                    
-                await axios.post('http://localhost:3000/failed/purchase',{
-                   res:res
-                })
-
-            }catch(err){
-                console.log(err);
-            }
-            alert('transaction failed please retry after some time');
-            console.log(res.error);
-        })
+                       
     }catch(err){
         console.log(err);
 
     }
+
+
 });

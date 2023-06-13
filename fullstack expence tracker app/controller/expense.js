@@ -2,7 +2,7 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 
 const {Expense} = require('../model/database');
-
+const {Orders} = require('../model/database');
 
 //For showing expense page
 exports.getData= (req,res,next)=>{
@@ -55,9 +55,11 @@ exports.postData = async (req,res,next)=>{
             )
             if(user){
                 res.send('success from postData');
+                console.log('success from postData',user);
             }
             else{
                 res.send('expense/postData error');
+                console.log('expense/postData error',user);
             }
 
         }catch(err){
@@ -94,4 +96,29 @@ exports.deleteData = async (req,res,next)=>{
 
 
 
+};
+
+exports.isPremium = async(req,res,next)=>{
+    let id = req.userID;
+
+    try{
+
+        let data = await Orders.findOne({
+            where:{
+                userId: id,
+                status: 'SUCCESS'
+            }
+        })
+
+        if(data){
+            console.log('PREMIUM USERRRRRRRRRRRRRR',data);
+            res.send("PREMIUM");
+        }else{
+            console.log('NOT A PREMIUM USER');
+        }
+
+
+    }catch(err){
+        console.error(err);
+    }
 };
