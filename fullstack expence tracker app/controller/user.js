@@ -44,10 +44,12 @@ exports.postData = async(req,res,next)=>{
                     }
                     else{
                         try {
+                            
                             const user = await User.create({
                               name: name,
                               email: email,
                               password: hash,
+                              total_expense: 0.00
                             });
                         
                             console.log('User created successfully:', user);

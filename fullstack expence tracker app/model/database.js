@@ -33,6 +33,11 @@ const User = sequelize.define('user', {
     type: DataTypes.STRING,
     allowNull:false,
 
+  },
+  total_expense: {
+    type: DataTypes.FLOAT,
+    allowNull: false
+    
   }
 });
 

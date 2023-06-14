@@ -1,6 +1,7 @@
 const path = require('path');
 const bcrypt = require('bcrypt');
 
+const {User} = require('../model/database'); 
 const {Expense} = require('../model/database');
 const {Orders} = require('../model/database');
 
@@ -45,7 +46,9 @@ exports.postData = async (req,res,next)=>{
     if(amount.length>0 && description.length>0 && category.length>0){
         let id = req.userID;
         try{
-            const user = await Expense.create(
+
+            //updating expense table
+            const expense = await Expense.create(
                 {
                     amount:amount,
                     description:description,
@@ -53,14 +56,39 @@ exports.postData = async (req,res,next)=>{
                     userId : id
                 }
             )
-            if(user){
+            if(expense){
                 res.send('success from postData');
-                console.log('success from postData',user);
+                console.log('success from postData',expense);
             }
             else{
                 res.send('expense/postData error');
-                console.log('expense/postData error',user);
+                console.log('expense/postData error',expense);
             }
+
+
+            //updating user table
+            let user = await User.findOne({
+                attributes: ['id','total_expense'],
+                where:{
+                    id: id
+                }
+                
+            })
+
+            console.log(user,user.total_expense,'line 78');
+
+            let ex = parseFloat(user.total_expense)  +parseFloat(amount);
+
+            let update = await User.update({
+                total_expense: ex
+            },{
+                where: {
+                    id: id
+                }
+            })
+
+
+
 
         }catch(err){
             console.error(err);
