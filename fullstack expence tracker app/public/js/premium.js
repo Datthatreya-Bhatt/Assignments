@@ -68,8 +68,21 @@ document.getElementById('btn').addEventListener('click',async()=>{
         
         let res = await axios.get('http://localhost:3000/user/premium/leaderboard');
         console.log('res',res);
+
+
+        let h = document.createElement('h3');
+        h.innerHTML = 'LEADER BOARD';
+
+        let div = document.getElementById('leaderboard');
+        div.appendChild(h);
+
         
-               
+        let length = res.data.length;
+        for(let i = 0;i<length;i++){
+            let li = document.createElement('li');
+            li.innerHTML = `Name-${res.data[i].name}-Total Expense-${res.data[i].total_expense}`;
+            div.appendChild(li);
+        }
                     
                        
     }catch(err){
