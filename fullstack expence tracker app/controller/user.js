@@ -1,10 +1,21 @@
 const path = require('path');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { Sequelize } = require('sequelize');
 
 const sk = require('../credentials/jwtSecret');
 
 const {User} = require('../model/database'); 
+
+const password = require('../credentials/mysql');
+
+
+const sequelize = new Sequelize('expense', 'root', password, {
+    host: 'localhost',
+    dialect: 'mysql',
+  });
+
+
 
 //For showing signup page
 exports.signup = (req,res,next)=>{
@@ -13,6 +24,8 @@ exports.signup = (req,res,next)=>{
 
 
 exports.postData = async(req,res,next)=>{
+    const t = await sequelize.transaction();
+
     const {name,email,password} = req.body;
 
     //to check if all the inputs are filled
@@ -49,13 +62,18 @@ exports.postData = async(req,res,next)=>{
                               name: name,
                               email: email,
                               password: hash,
-                              total_expense: 0.00
+                              total_expense: 0.00,
+                            },{transaction: t
                             });
                         
                             console.log('User created successfully:', user);
-                            res.send('success');
+                            if(user){
+                                res.send('success');
+                                t.commit();
+                            }
 
                         } catch (error) {
+                            t.rollback();
                             console.error('Error creating user:', error);
                         }
                     }  

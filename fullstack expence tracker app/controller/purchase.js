@@ -1,10 +1,21 @@
 const Razorpay = require('razorpay');
+const { Sequelize } = require('sequelize');
 
 const {Orders} = require('../model/database');
 const cred = require('../credentials/razorpay');
 
+const password = require('../credentials/mysql');
+
+
+const sequelize = new Sequelize('expense', 'root', password, {
+    host: 'localhost',
+    dialect: 'mysql',
+  });
+
+
 
 exports.getPurchase = async(req,res,next)=>{
+    const t = await sequelize.transaction();
     try{
         let amount = 99999;
         
@@ -32,16 +43,20 @@ exports.getPurchase = async(req,res,next)=>{
                             paymentid: "No id now",
                             orderid: order.id,
                             status: "pending",
-                            userId: req.userID
-                        })
+                            userId: req.userID,
+                            
+                        },{transaction: t}
+                        )
                         if(data){
                             console.log('order table created');
+                           
                         }
                         else{
                             console.log('error in creating order table');
                         }
                     }catch(err){
                         console.error(err);
+                       
                     }
                     
 
@@ -52,9 +67,10 @@ exports.getPurchase = async(req,res,next)=>{
         }
         );
 
-        
+     t.commit();
 
     }catch(err){
+        t.rollback();
         console.error(err);
     }
 };
@@ -65,6 +81,7 @@ exports.postSuccess = async(req,res,next)=>{
     let order_id = req.body.res.razorpay_order_id;
     let payment_id = req.body.res.razorpay_payment_id;
     console.log('purchase control post success line 67>>>',req.userID);
+    const t = await sequelize.transaction();
 
     try{
 
@@ -72,16 +89,19 @@ exports.postSuccess = async(req,res,next)=>{
             orderid: order_id,
             paymentid: payment_id,
             status: 'SUCCESS',
-            userId: req.userID
+            userId: req.userID,
+            
         },{
             where:{
                 orderId: order_id
-            }
+            },
+            transaction: t
         })
 
         if(data){
             console.log('post success line 83', data);
             res.send('task complete');
+            t.commit();
         }else{
             console.log('error in post success line 86');
         }
@@ -90,6 +110,7 @@ exports.postSuccess = async(req,res,next)=>{
 
     }catch(err){
         console.error(err);
+        t.rollback();
     }
     
 };
@@ -102,29 +123,35 @@ exports.postFailed = async(req,res,next)=>{
     let payment_id = req.body.res.error.metadata.payment_id;
     console.log('purchase control post failed line 96>>>',req.userID);
 
+    const t = await sequelize.transaction();
+
     try{
         let data = await Orders.update({
             orderid: order_id,
             paymentid: payment_id,
             status: 'FAILED',
-            userId: req.userID
+            userId: req.userID,
+          
             },
             {
             where:{
                 orderid: order_id
-            }
+            },
+            transaction: t
         }) 
 
         
         if(data){
             console.log('post failed line 121', data);
             res.send('task complete');
+            t.commit();
         }else{
             console.log('error in post failed line 124');
         }
 
     }catch(err){
         console.error(err);
+        t.rollback();
     }
 
     
@@ -133,50 +160,3 @@ exports.postFailed = async(req,res,next)=>{
 
 
 
-
-
-
-// exports.postPurchase= async(req,res,next)=>{
-//     let order_id = req.body.order_id;
-//     let paymentid = req.body.payment_id;
-//     let status = req.body.status;
-//     console.log('ressss',req.body);
-
-
-//     let rzp = new Razorpay({
-//         key_id: cred.keyId,
-//         key_secret: cred.keySecret 
-//     })
-
-
-//     try{
-//         let razorRes = await rzp.orders.fetch(order_id)
-//         console.log('razor order fetch',razorRes);
-
-//         try{
-//             const data = await Orders.update({
-//                 paymentid: paymentid,
-//                 status: status
-//             },
-//             {where:{
-//                 orderid: razorRes.id
-//               }
-//             })
-
-
-//             if(data){
-//                 console.log('order table created');
-//             }
-//             else{
-//                 console.log('error in creating order table in post purchse controle');
-//             }
-
-
-//         }catch(err){
-//             console.error(err);
-//         }
-
-//     }catch(err){
-//         console.error(err);
-//     }
-// };

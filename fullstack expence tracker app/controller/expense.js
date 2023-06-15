@@ -1,9 +1,20 @@
 const path = require('path');
 const bcrypt = require('bcrypt');
 
+const { Sequelize  } = require('sequelize');
 const {User} = require('../model/database'); 
 const {Expense} = require('../model/database');
 const {Orders} = require('../model/database');
+
+const password = require('../credentials/mysql');
+
+
+const sequelize = new Sequelize('expense', 'root', password, {
+    host: 'localhost',
+    dialect: 'mysql',
+  });
+
+
 
 //For showing expense page
 exports.getData= (req,res,next)=>{
@@ -42,6 +53,7 @@ exports.getExpenseData = async (req,res,next)=>{
 
 exports.postData = async (req,res,next)=>{
     let {amount,description,category} = req.body;
+    const t = await sequelize.transaction();
 
     if(amount.length>0 && description.length>0 && category.length>0){
         let id = req.userID;
@@ -53,12 +65,15 @@ exports.postData = async (req,res,next)=>{
                     amount:amount,
                     description:description,
                     category: category,
-                    userId : id
-                }
+                    userId : id,
+                   
+                },
+                { transaction: t}
             )
             if(expense){
                 res.send('success from postData');
                 console.log('success from postData',expense);
+                
             }
             else{
                 res.send('expense/postData error');
@@ -77,21 +92,28 @@ exports.postData = async (req,res,next)=>{
 
             console.log(user,user.total_expense,'line 78');
 
-            let ex = parseFloat(user.total_expense)  +parseFloat(amount);
+            let ex = Number(user.total_expense)  + Number(amount);
 
             let update = await User.update({
                 total_expense: ex
             },{
                 where: {
                     id: id
-                }
+                },
+                transaction: t
+                
             })
+
+            if(update){
+                t.commit();
+            }
 
 
 
 
         }catch(err){
             console.error(err);
+            t.rollback();
         }
 
     }
@@ -99,18 +121,87 @@ exports.postData = async (req,res,next)=>{
 
 exports.deleteData = async (req,res,next)=>{
     let id = req.userID;
-    let product = req.params.id;
+    let entry = req.params.id;
+    const t = await sequelize.transaction();
+    let amount = 0;
+ try{
+
+    //for getting amount from Expense table
+    try{
+
+        let data  = await Expense.findOne({
+            attributes:['amount'],
+            where:{
+                userId:id,
+                id:entry
+            }
+        });
+
+        //for getting data from user table
+
+        let data2 = await User.findOne({
+            attributes: ['total_expense'],
+            where: {
+                id: id
+            }
+        })
+
+        amount = Number(data2.total_expense) - Number(data.amount);
+
+        if(data && data2){
+            //console.log('no error');
+        }
+        else{
+            console.error('error in delete');
+        }
+
+
+    }catch(err){
+        console.error(err);
+       
+    }
+
+
     
+
+    //for updating database
+    try{
+
+         
+        const user = await User.update({
+            total_expense: amount
+        },{
+            where:{
+                id: id
+            },
+            transaction:t
+        })
+
+        if(user){
+           console.log('success');
+        }
+
+    }catch(err){
+        console.error(err);
+      
+    }
+
+
+
+    
+    //for deleting from database
     try{
         const user = await Expense.destroy({
             where:{
                 userId:id,
-                id:product
-            }
+                id:entry
+            },
+            transaction:t
         });
 
         if(user){
             res.send('success');
+           
         }else{
             res.send('fail');
         }
@@ -118,13 +209,30 @@ exports.deleteData = async (req,res,next)=>{
     }
     catch(err){
         console.error(err);
+      
     };
+
+
+t.commit();
+
+}
+catch(err){
+    console.error(err);
+    t.rollback();
+  
+};
 
 
 
 
 
 };
+
+
+
+
+
+
 
 exports.isPremium = async(req,res,next)=>{
     let id = req.userID;

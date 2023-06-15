@@ -2,7 +2,7 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 
 const {Expense,User} = require('../model/database');
-const { Sequelize } = require('sequelize');
+
 
 
 
