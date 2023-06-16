@@ -2,12 +2,12 @@ const Razorpay = require('razorpay');
 const { Sequelize } = require('sequelize');
 
 const {Orders} = require('../model/database');
-const cred = require('../credentials/razorpay');
-
-const password = require('../credentials/mysql');
 
 
-const sequelize = new Sequelize('expense', 'root', password, {
+require('dotenv').config();
+
+
+const sequelize = new Sequelize('expense', 'root', process.env.SQL_PASSWORD, {
     host: 'localhost',
     dialect: 'mysql',
   });
@@ -20,8 +20,8 @@ exports.getPurchase = async(req,res,next)=>{
         let amount = 99999;
         
         let rzp = new Razorpay({
-            key_id: cred.keyId,
-            key_secret: cred.keySecret 
+            key_id: RAZORP_KEY_ID,
+            key_secret: RAZORP_KEY_S
         })
         
         rzp.orders.create({
@@ -34,7 +34,7 @@ exports.getPurchase = async(req,res,next)=>{
             }else{
                 try{
                     console.log('>>>>>>>>>>>>2555',order);
-                    order.key = cred.keyId;
+                    order.key = RAZORP_KEY_ID;
                     res.send(order);
                     console.log('purchase control line 25>>>',order);
                     console.log('purchase control line 29>>>',req.userID);

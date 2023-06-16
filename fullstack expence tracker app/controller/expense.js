@@ -6,10 +6,11 @@ const {User} = require('../model/database');
 const {Expense} = require('../model/database');
 const {Orders} = require('../model/database');
 
-const password = require('../credentials/mysql');
+
+require('dotenv').config();
 
 
-const sequelize = new Sequelize('expense', 'root', password, {
+const sequelize = new Sequelize('expense', 'root',  process.env.SQL_PASSWORD, {
     host: 'localhost',
     dialect: 'mysql',
   });

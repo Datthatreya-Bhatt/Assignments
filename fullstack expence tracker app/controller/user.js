@@ -3,14 +3,13 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { Sequelize } = require('sequelize');
 
-const sk = require('../credentials/jwtSecret');
-
 const {User} = require('../model/database'); 
 
-const password = require('../credentials/mysql');
+
+require('dotenv').config();
 
 
-const sequelize = new Sequelize('expense', 'root', password, {
+const sequelize = new Sequelize('expense', 'root',  process.env.SQL_PASSWORD, {
     host: 'localhost',
     dialect: 'mysql',
   });
@@ -124,7 +123,7 @@ exports.postlogin = async(req,res,next)=>{
                         })
                         if(user){
                             let id = user.dataValues.id;
-                            let token = jwt.sign({id:id},sk);
+                            let token = jwt.sign({id:id},JWT_S_KEY);
                             res.status(201).send(token);
                             
                         }else{
