@@ -3,7 +3,6 @@ const { Sequelize } = require('sequelize');
 
 const {Orders} = require('../model/database');
 
-
 require('dotenv').config();
 
 
@@ -33,11 +32,8 @@ exports.getPurchase = async(req,res,next)=>{
                 console.error(err);
             }else{
                 try{
-                    console.log('>>>>>>>>>>>>2555',order);
                     order.key = RAZORP_KEY_ID;
                     res.send(order);
-                    console.log('purchase control line 25>>>',order);
-                    console.log('purchase control line 29>>>',req.userID);
                     try{
                         const data = await Orders.create({
                             paymentid: "No id now",
@@ -67,20 +63,18 @@ exports.getPurchase = async(req,res,next)=>{
         }
         );
 
-     t.commit();
+     await t.commit();
 
     }catch(err){
-        t.rollback();
+        await t.rollback();
         console.error(err);
     }
 };
 
 
 exports.postSuccess = async(req,res,next)=>{
-    console.log("success",req.body);
     let order_id = req.body.res.razorpay_order_id;
     let payment_id = req.body.res.razorpay_payment_id;
-    console.log('purchase control post success line 67>>>',req.userID);
     const t = await sequelize.transaction();
 
     try{
@@ -99,9 +93,8 @@ exports.postSuccess = async(req,res,next)=>{
         })
 
         if(data){
-            console.log('post success line 83', data);
             res.send('task complete');
-            t.commit();
+            await t.commit();
         }else{
             console.log('error in post success line 86');
         }
@@ -110,18 +103,15 @@ exports.postSuccess = async(req,res,next)=>{
 
     }catch(err){
         console.error(err);
-        t.rollback();
+        await t.rollback();
     }
     
 };
 
 
 exports.postFailed = async(req,res,next)=>{
-    console.log("failed",req.body,'>>>>>>>>>',req.body.res.error.metadata);
-
     let order_id = req.body.res.error.metadata.order_id;
     let payment_id = req.body.res.error.metadata.payment_id;
-    console.log('purchase control post failed line 96>>>',req.userID);
 
     const t = await sequelize.transaction();
 
@@ -144,14 +134,14 @@ exports.postFailed = async(req,res,next)=>{
         if(data){
             console.log('post failed line 121', data);
             res.send('task complete');
-            t.commit();
+            await t.commit();
         }else{
             console.log('error in post failed line 124');
         }
 
     }catch(err){
         console.error(err);
-        t.rollback();
+        await t.rollback();
     }
 
     

@@ -73,12 +73,12 @@ exports.postData = async (req,res,next)=>{
             )
             if(expense){
                 res.send('success from postData');
-                console.log('success from postData',expense);
+                console.log('success from postData');
                 
             }
             else{
                 res.send('expense/postData error');
-                console.log('expense/postData error',expense);
+                console.log('expense/postData error');
             }
 
 
@@ -91,7 +91,6 @@ exports.postData = async (req,res,next)=>{
                 
             })
 
-            console.log(user,user.total_expense,'line 78');
 
             let ex = Number(user.total_expense)  + Number(amount);
 
@@ -106,7 +105,7 @@ exports.postData = async (req,res,next)=>{
             })
 
             if(update){
-                t.commit();
+                await t.commit();
             }
 
 
@@ -114,7 +113,7 @@ exports.postData = async (req,res,next)=>{
 
         }catch(err){
             console.error(err);
-            t.rollback();
+            await t.rollback();
         }
 
     }
@@ -214,12 +213,12 @@ exports.deleteData = async (req,res,next)=>{
     };
 
 
-t.commit();
+    await t.commit();
 
 }
 catch(err){
     console.error(err);
-    t.rollback();
+    await t.rollback();
   
 };
 
@@ -248,7 +247,6 @@ exports.isPremium = async(req,res,next)=>{
         })
 
         if(data){
-            console.log('PREMIUM USERRRRRRRRRRRRRR',data);
             res.send("PREMIUM");
         }else{
             console.log('NOT A PREMIUM USER');

@@ -85,6 +85,41 @@ const Orders = sequelize.define('orders',{
 });
 
 
+
+const ForgotPasswordRequests = sequelize.define('forgotpasswordrequests',{
+  sl:{
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    unique: true,
+    primaryKey: true,
+    allowNull: false,
+  
+    
+  },
+  id:{
+      type: DataTypes.STRING,
+      unique:true,
+      allowNull:false
+  },
+  userId:{ 
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  isActive:{
+    type: DataTypes.BOOLEAN,
+    allowNull: false
+  }
+
+});
+
+
+
+
+
+
+
+
+
 // Create the table in the database
 async function createTable(obj) {
   try {
@@ -102,10 +137,14 @@ Expense.belongsTo(User);
 User.hasMany(Orders);
 Orders.belongsTo(User);
 
+User.hasMany(ForgotPasswordRequests);
+ForgotPasswordRequests.belongsTo(User);
+
 let ex = async()=>{
     await createTable(User);
     await createTable(Expense);
     await createTable(Orders);
+    await createTable(ForgotPasswordRequests);
 }
 
 ex();
@@ -115,5 +154,6 @@ ex();
 module.exports = {
     User:User,
     Expense:Expense,
-    Orders: Orders
+    Orders: Orders,
+    FPR: ForgotPasswordRequests
 };

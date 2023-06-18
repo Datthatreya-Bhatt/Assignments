@@ -5,7 +5,6 @@ const { Sequelize } = require('sequelize');
 
 const {User} = require('../model/database'); 
 
-
 require('dotenv').config();
 
 
@@ -38,7 +37,6 @@ exports.postData = async(req,res,next)=>{
               attributes: ['email'],
             });
 
-            console.log(user,' user controle line 33');
             if (user) {
                 res.send('fail');
                 const email = user.email;
@@ -52,7 +50,7 @@ exports.postData = async(req,res,next)=>{
                 const saltRound = 10;
                 bcrypt.hash(password,saltRound,async(err,hash)=>{
                     if(err){
-                        console.log('enryption error');
+                        console.error('enryption error',err);
                     }
                     else{
                         try {
@@ -65,14 +63,13 @@ exports.postData = async(req,res,next)=>{
                             },{transaction: t
                             });
                         
-                            console.log('User created successfully:', user);
                             if(user){
                                 res.send('success');
-                                t.commit();
+                                await t.commit();
                             }
 
                         } catch (error) {
-                            t.rollback();
+                            await t.rollback();
                             console.error('Error creating user:', error);
                         }
                     }  
@@ -123,7 +120,7 @@ exports.postlogin = async(req,res,next)=>{
                         })
                         if(user){
                             let id = user.dataValues.id;
-                            let token = jwt.sign({id:id},JWT_S_KEY);
+                            let token = jwt.sign({id:id},process.env.JWT_S_KEY);
                             res.status(201).send(token);
                             
                         }else{

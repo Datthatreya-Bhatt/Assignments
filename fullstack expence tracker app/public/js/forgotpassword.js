@@ -6,28 +6,12 @@ document.getElementById('button').addEventListener('click',async()=>{
            
         })
 
-
-
-
-
-        
-            
-        if(res.data === 'incorrect'){
-            alert('Email or Password is incorrect');
-        }else if(res.status === 201){
-            localStorage.setItem('token',res.data);
-            
-
-            let token = localStorage.getItem('token');
-            axios.defaults.headers.common['Authorization'] =`${token}`;
-            
-          
-            location.href = 'http://localhost:3000/expense';
-            
-
+            console.log(res);
+        if(res.data === 'success'){
+            alert('Reset link sent to your verified email');
         }
         else{
-            alert('status not found');
+            alert('email not found');
             console.log(res);
         }
 
