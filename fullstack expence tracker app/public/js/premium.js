@@ -42,6 +42,7 @@ window.onload = async()=>{
     }
 };
 
+//form submit
 document.getElementById('button').addEventListener('click',async()=>{
     let amount = document.getElementById('amount').value;
     let description = document.getElementById('description').value;
@@ -61,7 +62,7 @@ document.getElementById('button').addEventListener('click',async()=>{
 });
 
 
-
+//leaderBoard
 document.getElementById('btn').addEventListener('click',async()=>{
     
     try{
@@ -92,3 +93,34 @@ document.getElementById('btn').addEventListener('click',async()=>{
 
 
 });
+
+//file download
+
+
+
+document.getElementById('btn2').addEventListener('click',async()=>{
+    
+    try{
+        
+        let res = await axios.get('http://localhost:3000/download');
+        console.log('res',res);
+
+        let url = res.data;
+
+        console.log(url);
+
+
+        
+
+        
+        
+                    
+                       
+    }catch(err){
+        console.log(err);
+
+    }
+
+
+});
+

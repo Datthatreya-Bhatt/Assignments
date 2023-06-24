@@ -113,7 +113,22 @@ const ForgotPasswordRequests = sequelize.define('forgotpasswordrequests',{
 });
 
 
+const DownloadedFile = sequelize.define('downloadedFile',{
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    allowNull: false
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  link: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  }
 
+}) 
 
 
 
@@ -140,11 +155,15 @@ Orders.belongsTo(User);
 User.hasMany(ForgotPasswordRequests);
 ForgotPasswordRequests.belongsTo(User);
 
+User.hasMany(DownloadedFile);
+DownloadedFile.belongsTo(User);
+
 let ex = async()=>{
     await createTable(User);
     await createTable(Expense);
     await createTable(Orders);
     await createTable(ForgotPasswordRequests);
+    await createTable(DownloadedFile);
 }
 
 ex();
@@ -155,5 +174,6 @@ module.exports = {
     User:User,
     Expense:Expense,
     Orders: Orders,
-    FPR: ForgotPasswordRequests
+    FPR: ForgotPasswordRequests,
+    DownloadedFile: DownloadedFile
 };

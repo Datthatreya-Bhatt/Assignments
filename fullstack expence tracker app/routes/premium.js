@@ -7,6 +7,6 @@ const router = express.Router();
 
 router.get('/user/premium',premium.getPremiumPage);
 router.get('/user/premium/leaderboard',auth.auth,premium.getLeaderBoard);
-
+router.get('/download',auth.auth,premium.downloadExpense);
 
 module.exports = router;
