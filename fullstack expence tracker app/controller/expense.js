@@ -28,13 +28,13 @@ exports.getExpenseData = async (req,res,next)=>{
     // console.log('line 14 >>>>>',req.userID);
     let id = req.userID;
     let page = Number( req.params.page);
-    let limi = 10;
+    let limit = Number(req.query.limit);
     
     try{
 
         const user = await Expense.findAll({
-            offset: (page-1)*limi,
-            limit: limi,
+            offset: (page-1)*limit,
+            limit: limit,
             where:{
                 userId:id
             }
@@ -44,7 +44,7 @@ exports.getExpenseData = async (req,res,next)=>{
                 userId: id
             }
         });
-        count = Math.ceil(count/limi);
+        count = Math.ceil(count/limit);
         let obj = {
             count: count,
             page: page

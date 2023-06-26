@@ -6,10 +6,10 @@ axios.defaults.headers.common['Authorization'] = token;
 
 window.onload = async()=>{
     try{
-    let res = await axios.get('http://localhost:3000/expense/data/1');
-    console.log(res);
-    loop(res);
-   
+        let res = await axios.get(`http://localhost:3000/expense/data/1/pagelimit?limit=${5}`);
+        console.log(res);
+        loop(res);
+    
 
     }catch(err){
         console.log(err);
@@ -124,16 +124,17 @@ document.getElementById('btn3').addEventListener('click',async()=>{
 });
 
 
-
+function setPageLimit(){
+    let limit = document.getElementById('limit').value;
+    localStorage.setItem('limit',`${limit}`);
+}
 
 
 async function prev(){
     let curr = document.getElementById('btn1').innerHTML;
-    
-    
-    
-
     curr = Number(curr);
+    
+    let limit = Number(localStorage.getItem('limit'));
 
     if(curr>1){
         let list = document.getElementById('list');
@@ -142,9 +143,12 @@ async function prev(){
         div.innerHTML = '';
 
         try{
-
+           
+            if(limit === 0){
+                limit = 5;
+            }
             let page = curr-1;
-            let res = await axios.get(`http://localhost:3000/expense/data/${page}`);
+            let res = await axios.get(`http://localhost:3000/expense/data/${page}/pagelimit?limit=${limit}`);
            // pagination(res);
             loop(res);
 
@@ -158,8 +162,7 @@ async function next(){
     let curr = document.getElementById('btn1').innerHTML;
     let max = document.getElementById('lastbtn').innerHTML;
     
-    
-
+    let limit = Number(localStorage.getItem('limit'));
     
     curr = Number(curr);
     max = Number(max);
@@ -170,9 +173,12 @@ async function next(){
         list.innerHTML = '';
         div.innerHTML = '';
         try{
-
+            
+            if(limit === 0){
+                limit = 5;
+            }
             let page = curr+1;
-            let res = await axios.get(`http://localhost:3000/expense/data/${page}`);
+            let res = await axios.get(`http://localhost:3000/expense/data/${page}/pagelimit?limit=${limit}`);
             //pagination(res);
             loop(res);
             
@@ -183,41 +189,53 @@ async function next(){
     }
 }
 
-
 function pagination(res){
     let currentPage = res.data.obj.page;
     let lastPage = res.data.obj.count;
 
     let div = document.getElementById('pagination');
+
     let p = document.createElement('p');
     let curr = document.createElement('button');
     let pre = document.createElement('button');
     let nex = document.createElement('button');
     let last = document.createElement('button');
     let text = document.createTextNode('of');
+    let select = document.createElement('select');
+    let opt1 = document.createElement('option');
+    let opt2 = document.createElement('option');
 
     curr.innerHTML = currentPage;
     last.innerHTML = lastPage;
     pre.innerHTML = 'Prev';
     nex.innerHTML = 'Next';
 
+    opt1.textContent = '5';
+    opt1.value = '5';
+    opt2.textContent = '10';
+    opt2.value = '10';
+
     curr.id = 'btn1';
     last.id = 'lastbtn';
+    select.id = 'limit';
 
     pre.addEventListener('click',prev);
     nex.addEventListener('click',next);
+    select.addEventListener('click',setPageLimit);
+
+    select.appendChild(opt1);
+    select.appendChild(opt2);
 
     p.appendChild(pre);
     p.appendChild(curr);
     p.appendChild(text);
     p.appendChild(last);
+    p.appendChild(select);
     p.appendChild(nex);
 
     div.appendChild(p);
-
-   
-
 }
+
 
 function loop(res){
     let length = res.data.user.length;
