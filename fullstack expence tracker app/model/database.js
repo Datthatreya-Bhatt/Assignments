@@ -97,7 +97,7 @@ const ForgotPasswordRequests = sequelize.define('forgotpasswordrequests',{
     
   },
   id:{
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       unique:true,
       allowNull:false
   },
@@ -117,14 +117,15 @@ const DownloadedFile = sequelize.define('downloadedFile',{
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    allowNull: false
+    allowNull: false,
+    primaryKey: true
   },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  link: {
-    type: DataTypes.INTEGER,
+  links: {
+    type: DataTypes.STRING,
     allowNull: false
   }
 

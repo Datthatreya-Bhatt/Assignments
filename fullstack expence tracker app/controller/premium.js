@@ -1,9 +1,10 @@
 const path = require('path');
 const AWS = require('aws-sdk');
+const { Sequelize  } = require('sequelize');
 
 require('dotenv').config();
 
-const {User, DownloadedFile} = require('../model/database');
+const {User, DownloadedFile,Expense} = require('../model/database');
 
 
 
@@ -61,21 +62,24 @@ async function uploadToS3(data,fileName){
       ACL: 'public-read'
     }
 
-    return new Promise( (resolve,reject)=>{
-      s3bucket.upload(params, (err,s3Res)=>{
-        if(err){
-          console.trace('something went wrong: ',err);
-          reject(err);
-        }
-        else{
-          console.trace('success', s3Res);
-          resolve(s3Res.Location);
-		
+   
+    return new Promise((resolve,reject)=>{
+      s3bucket.upload(params,(err,s3Res)=>{
+      if(err){
+        console.trace('something went wrong: ',err);
+        reject(err);
+       
+      }
+      else{
+        console.trace('success', s3Res);
+        resolve(s3Res);
 
-        }
+      }
+
+
       })
-
     })
+    /*,  */
    
 
   }catch(err){
@@ -91,7 +95,7 @@ async function uploadToS3(data,fileName){
 
 exports.downloadExpense = async(req,res,next)=>{
     try{
-		let t = await sequelize.transaction();
+		    let t = await sequelize.transaction();
         let id = req.userID;
         const user = await Expense.findAll({
             where:{
@@ -102,18 +106,21 @@ exports.downloadExpense = async(req,res,next)=>{
           let stringyfy = JSON.stringify(user);
           let filename = `Expense${id}-${new Date()}.txt`;
           let fileUrl = await uploadToS3(stringyfy,filename);
+          
 
-
-		  let link = await DownloadedFile.create({
+		  let link1 = await DownloadedFile.create({
 			userId: id,
-			link: fileUrl
+			links: fileUrl.Location
 		  },
 		  {transaction: t
 		  })
-          res.status(200).send(fileUrl);  
+      console.trace(link1);
+          res.status(200).send(fileUrl.Location);  
         }
     
+    t.commit();
     }catch(err){
+        t.rollback();
         console.error(err);
         res.status(500).send(err);
     }
@@ -125,7 +132,24 @@ exports.downloadExpense = async(req,res,next)=>{
 
 
 
+exports.downloadList = async(req,res,next)=>{
 
+  let id = req.userID;
+  try{
+    let list = await DownloadedFile.findAll({
+      attributes: ['userId','links'],
+      where: {
+        userId: id
+      }
+    })
+    console.trace(list);
+    res.send(list);
+  }catch(err){
+    console.trace(err);
+  }
+
+
+}
 
 
 

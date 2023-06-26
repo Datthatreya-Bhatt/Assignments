@@ -27,20 +27,31 @@ exports.getExpenseData = async (req,res,next)=>{
    
     // console.log('line 14 >>>>>',req.userID);
     let id = req.userID;
+    let page = Number( req.params.page);
+    let limi = 10;
     
     try{
 
         const user = await Expense.findAll({
+            offset: (page-1)*limi,
+            limit: limi,
             where:{
                 userId:id
             }
         });
+        let count = await Expense.count();
+        count = Math.ceil(count/limi);
+        let obj = {
+            count: count,
+            page: page
+        }
+  
         if(user){
-            res.send(user);
-            // console.log(' expense control line 27',user);
+            res.send({user: user,obj:obj});
+             console.log(' expense control line 27',user);
         }
         else{
-            res.send('fail')
+            //res.send('fail')
             console.log('expense control line 31',user);
         }
     
