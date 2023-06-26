@@ -39,7 +39,11 @@ exports.getExpenseData = async (req,res,next)=>{
                 userId:id
             }
         });
-        let count = await Expense.count();
+        let count = await Expense.count({
+            where: {
+                userId: id
+            }
+        });
         count = Math.ceil(count/limi);
         let obj = {
             count: count,
@@ -48,7 +52,7 @@ exports.getExpenseData = async (req,res,next)=>{
   
         if(user){
             res.send({user: user,obj:obj});
-             console.log(' expense control line 27',user);
+             //console.log(' expense control line 27',user);
         }
         else{
             //res.send('fail')
