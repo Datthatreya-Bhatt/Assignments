@@ -8,11 +8,10 @@ const {User, DownloadedFile,Expense} = require('../model/database');
 
 
 
-const sequelize = new Sequelize('expense', 'root', process.env.SQL_PASSWORD, {
-    host: 'localhost',
-    dialect: 'mysql',
-  });
-
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER_NAME,  process.env.SQL_PASSWORD, {
+  host: process.env.DB_HOST,
+  dialect: process.env.DB_DIALECT,
+});
 
 //For showing expense page
 exports.getPremiumPage = (req,res,next)=>{
@@ -121,7 +120,7 @@ exports.downloadExpense = async(req,res,next)=>{
     t.commit();
     }catch(err){
         t.rollback();
-        console.error(err);
+        console.trace(err);
         res.status(500).send(err);
     }
 

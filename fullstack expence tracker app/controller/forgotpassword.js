@@ -9,9 +9,9 @@ const { Sequelize  } = require('sequelize');
 const {User,FPR} = require('../model/database');
 
 
-const sequelize = new Sequelize('expense', 'root', process.env.SQL_PASSWORD, {
-    host: 'localhost',
-    dialect: 'mysql',
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER_NAME,  process.env.SQL_PASSWORD, {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT,
   });
 
 //For showing forgotpassword page
@@ -53,7 +53,7 @@ exports.getEmail = async (req,res,next)=>{
         
     }catch(err){
         await t.rollback();
-        console.error(err);
+        console.trace(err);
     }
 
     try{  
@@ -87,7 +87,7 @@ exports.getEmail = async (req,res,next)=>{
     await t.commit();
     }catch(err){
         await t.rollback();
-        console.error('line 88',err);
+        console.trace('line 88',err);
     }
 
 };
@@ -113,7 +113,7 @@ exports.getResetPage = async(req,res,next)=>{
             res.send('cannot find emailll');
         }
     }catch(err){
-        console.error(err);
+        console.trace(err);
     }
 
 
@@ -132,7 +132,7 @@ exports.postResetPas = async(req,res,next)=>{
                 isActive: true
             }
         })
-        console.log(data,'line 130',data.isActive);
+        
         if(data.isActive){
             try{
                 let fpr = await FPR.update({
@@ -148,8 +148,8 @@ exports.postResetPas = async(req,res,next)=>{
 
 
                 //creating new user
-                const saltRound = 10;
-                let hash = await bcrypt.hash(password,saltRound);
+                
+                let hash = await bcrypt.hash(password,Number(process.env.SALT_ROUND));
                 
                 console.trace(hash);
                 
@@ -170,7 +170,7 @@ exports.postResetPas = async(req,res,next)=>{
                         console.trace(user);
                     }
                  } catch (err) {
-                    console.error(err);
+                    console.trace(err);
                     
                  }
 
@@ -179,12 +179,12 @@ exports.postResetPas = async(req,res,next)=>{
 
 
             }catch(err){
-                console.error(err);
+                console.trace(err);
             }
         }
     await t.commit();
     }catch(err){
         await t.rollback();
-        console.error(err);
+        console.trace(err);
     }
 };

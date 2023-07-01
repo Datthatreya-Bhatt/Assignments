@@ -6,11 +6,10 @@ const {Orders} = require('../model/database');
 require('dotenv').config();
 
 
-const sequelize = new Sequelize('expense', 'root', process.env.SQL_PASSWORD, {
-    host: 'localhost',
-    dialect: 'mysql',
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER_NAME,  process.env.SQL_PASSWORD, {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT,
   });
-
 
 
 exports.getPurchase = async(req,res,next)=>{
@@ -51,13 +50,13 @@ exports.getPurchase = async(req,res,next)=>{
                             console.log('error in creating order table');
                         }
                     }catch(err){
-                        console.error(err);
+                        console.trace(err);
                        
                     }
                     
 
                 }catch(err){
-                    console.error(err);
+                    console.trace(err);
                 }
             }
         }
@@ -67,7 +66,7 @@ exports.getPurchase = async(req,res,next)=>{
 
     }catch(err){
         await t.rollback();
-        console.error(err);
+        console.trace(err);
     }
 };
 
@@ -102,7 +101,7 @@ exports.postSuccess = async(req,res,next)=>{
         
 
     }catch(err){
-        console.error(err);
+        console.trace(err);
         await t.rollback();
     }
     
@@ -140,7 +139,7 @@ exports.postFailed = async(req,res,next)=>{
         }
 
     }catch(err){
-        console.error(err);
+        console.trace(err);
         await t.rollback();
     }
 

@@ -9,10 +9,9 @@ exports.auth = (req,res,next)=>{
 
     jwt.verify(`${token}`,sk,(err,decode)=>{
         if(err){
-            console.error("errorr at auth 11 >>>>>>",err);
+            console.trace(err);
             res.redirect('/user/login');
         }else{
-            console.log("ans at auth 14>>>>>>",decode);
             req.userID = decode.id;
             next();
         }

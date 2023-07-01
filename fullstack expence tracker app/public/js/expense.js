@@ -4,7 +4,8 @@ axios.defaults.headers.common['Authorization'] = token;
 
 let temp = async()=>{
     let res = await axios.get('http://localhost:3000/ispremium');
-    console.log(res);
+    location.href = res.data;
+    console.log('res',res);
     if(res.data ==="PREMIUM"){
         location.href = 'http://localhost:3000/user/premium';
     }

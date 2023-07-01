@@ -10,9 +10,9 @@ const {Orders} = require('../model/database');
 require('dotenv').config();
 
 
-const sequelize = new Sequelize('expense', 'root',  process.env.SQL_PASSWORD, {
-    host: 'localhost',
-    dialect: 'mysql',
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER_NAME,  process.env.SQL_PASSWORD, {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT,
   });
 
 
@@ -25,7 +25,6 @@ exports.getData= (req,res,next)=>{
 
 exports.getExpenseData = async (req,res,next)=>{
    
-    // console.log('line 14 >>>>>',req.userID);
     let id = req.userID;
     let page = Number( req.params.page);
     let limit = Number(req.query.limit);
@@ -52,11 +51,9 @@ exports.getExpenseData = async (req,res,next)=>{
   
         if(user){
             res.send({user: user,obj:obj});
-             //console.log(' expense control line 27',user);
         }
         else{
-            //res.send('fail')
-            console.log('expense control line 31',user);
+            res.send('fail');
         }
     
     }catch(err){
@@ -262,7 +259,10 @@ exports.isPremium = async(req,res,next)=>{
         })
 
         if(data){
-            res.send("PREMIUM");
+            //res.send("PREMIUM");
+            res.redirect('/user/premium');
+            console.trace('Logging');
+            
         }else{
             console.log('NOT A PREMIUM USER');
         }

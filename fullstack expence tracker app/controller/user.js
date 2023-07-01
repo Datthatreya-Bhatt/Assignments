@@ -8,12 +8,10 @@ const {User} = require('../model/database');
 require('dotenv').config();
 
 
-const sequelize = new Sequelize('expense', 'root',  process.env.SQL_PASSWORD, {
-    host: 'localhost',
-    dialect: 'mysql',
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER_NAME,  process.env.SQL_PASSWORD, {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT,
   });
-
-
 
 //For showing signup page
 exports.signup = (req,res,next)=>{
@@ -47,8 +45,8 @@ exports.postData = async(req,res,next)=>{
                 console.log('No user found with the input email');
 
                 //creating new user
-                const saltRound = 10;
-                bcrypt.hash(password,saltRound,async(err,hash)=>{
+              
+                bcrypt.hash(password,Number(process.env.SALT_ROUND),async(err,hash)=>{
                     if(err){
                         console.error('enryption error',err);
                     }
@@ -70,7 +68,7 @@ exports.postData = async(req,res,next)=>{
 
                         } catch (error) {
                             await t.rollback();
-                            console.error('Error creating user:', error);
+                            console.trace('Error creating user:', error);
                         }
                     }  
               
@@ -79,7 +77,7 @@ exports.postData = async(req,res,next)=>{
             }
             
         } catch (error) {
-        console.error(error);
+        console.trace(error);
         }
     }else{
         res.send('length');
@@ -124,11 +122,11 @@ exports.postlogin = async(req,res,next)=>{
                             res.status(201).send(token);
                             
                         }else{
-                            console.error('error at postlogin')
+                            console.trace('error at postlogin')
                         }
                     }catch(err){
                         res.status(500);
-                        console.log(err);
+                        console.trace(err);
                     }
                     
                }
@@ -146,12 +144,12 @@ exports.postlogin = async(req,res,next)=>{
         }
         else{
             res.status(500).send('error');
-            console.log(err);
+            console.trace(err);
         }
 
 
     }catch(err){
-        console.log('first try block error',err);
+        console.trace('first try block error',err);
     }
 
 
