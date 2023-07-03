@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const sk = require('../credentials/jwtSecret');
+require('dotenv').config();
 
 exports.auth = (req,res,next)=>{
     
@@ -7,7 +7,7 @@ exports.auth = (req,res,next)=>{
     
 
 
-    jwt.verify(`${token}`,sk,(err,decode)=>{
+    jwt.verify(`${token}`,process.env.JWT_S_KEY,(err,decode)=>{
         if(err){
             console.trace(err);
             res.redirect('/user/login');

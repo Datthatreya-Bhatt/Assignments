@@ -1,5 +1,17 @@
+//Change all url name to our aws url in frintend js file
+
+// __/\\\\\\\\\\\\\____/\\\\____________/\\\\____/\\\\\\\\\_____
+//  _\/\\\/////////\\\_\/\\\\\\________/\\\\\\__/\\\///////\\\___
+//   _\/\\\_______\/\\\_\/\\\//\\\____/\\\//\\\_\///______\//\\\__
+//    _\/\\\\\\\\\\\\\/__\/\\\\///\\\/\\\/_\/\\\___________/\\\/___
+//     _\/\\\/////////____\/\\\__\///\\\/___\/\\\________/\\\//_____
+//      _\/\\\_____________\/\\\____\///_____\/\\\_____/\\\//________
+//       _\/\\\_____________\/\\\_____________\/\\\___/\\\/___________
+//        _\/\\\_____________\/\\\_____________\/\\\__/\\\\\\\\\\\\\\\_
+//         _\///______________\///______________\///__\///////////////__
+//pm2 is just for fun 
+
 const path = require('path');
-const bcrypt = require('bcrypt');
 
 const { Sequelize  } = require('sequelize');
 const {User} = require('../model/database'); 
@@ -12,10 +24,8 @@ require('dotenv').config();
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER_NAME,  process.env.SQL_PASSWORD, {
     host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT,
+    dialect: 'mysql',
   });
-
-
 
 //For showing expense page
 exports.getData= (req,res,next)=>{

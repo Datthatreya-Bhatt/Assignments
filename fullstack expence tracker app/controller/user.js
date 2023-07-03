@@ -10,9 +10,9 @@ require('dotenv').config();
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER_NAME,  process.env.SQL_PASSWORD, {
     host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT,
+    dialect: 'mysql',
   });
-
+  
 //For showing signup page
 exports.signup = (req,res,next)=>{
     res.status(200).sendFile(path.join(__dirname,'../','public','signup.html'));

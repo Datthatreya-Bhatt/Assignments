@@ -8,9 +8,8 @@ require('dotenv').config();
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER_NAME,  process.env.SQL_PASSWORD, {
     host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT,
+    dialect: 'mysql',
   });
-
 
 exports.getPurchase = async(req,res,next)=>{
     const t = await sequelize.transaction();
