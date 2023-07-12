@@ -1,22 +1,23 @@
 const path = require('path');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { Sequelize } = require('sequelize');
-
-const {User} = require('../model/database'); 
-
 require('dotenv').config();
 
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER_NAME,  process.env.SQL_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
-  });
-  
+const sequelize = require('../model/sequelize');
+const {User,Orders} = require('../model/database');
+
+
+
+
+
 //For showing signup page
 exports.signup = (req,res,next)=>{
     res.status(200).sendFile(path.join(__dirname,'../','public','signup.html'));
 };
+
+
+
 
 
 exports.postData = async(req,res,next)=>{
@@ -93,6 +94,40 @@ exports.getlogin = (req,res,next)=>{
     res.sendFile(path.join(__dirname,'../','public','login.html'));
 };
 
+
+
+
+
+isPremium = async(req,res,next)=>{
+    let id = req.userID;
+
+    try{
+
+        let data = await Orders.findOne({
+            where:{
+                userId: id,
+                status: 'SUCCESS'
+            }
+        })
+
+        if(data){
+            return true;
+            
+        }else{
+            console.log('NOT A PREMIUM USER');
+            return false
+        }
+
+
+    }catch(err){
+        console.error(err);
+    }
+};
+
+
+
+
+
 //to validate login page
 exports.postlogin = async(req,res,next)=>{
     const {email,password} = req.body;
@@ -119,7 +154,12 @@ exports.postlogin = async(req,res,next)=>{
                         if(user){
                             let id = user.dataValues.id;
                             let token = jwt.sign({id:id},process.env.JWT_S_KEY);
-                            res.status(201).send(token);
+
+                            req.userID = id;
+                            
+                            let ispremium = await isPremium(req,res);
+
+                            res.status(201).send({token: token, ispremium: ispremium});
                             
                         }else{
                             console.trace('error at postlogin')

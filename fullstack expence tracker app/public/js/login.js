@@ -1,9 +1,11 @@
+let url = 'http://localhost:3000';
+
 document.getElementById('button').addEventListener('click',async()=>{
     let email = document.getElementById('email').value;
     let password = document.getElementById('password').value;
 
     try{
-        let res = await axios.post('http://localhost:3000/user/login',{
+        let res = await axios.post(`${url}/user/login`,{
             email: email,
             password: password
         })
@@ -11,14 +13,20 @@ document.getElementById('button').addEventListener('click',async()=>{
         if(res.data === 'incorrect'){
             alert('Email or Password is incorrect');
         }else if(res.status === 201){
-            localStorage.setItem('token',res.data);
+            localStorage.setItem('token',res.data.token);
             
 
             let token = localStorage.getItem('token');
             axios.defaults.headers.common['Authorization'] =`${token}`;
             
             
-            location.href = 'http://localhost:3000/expense';
+           if(res.data.ispremium){
+            
+                location.href = `${url}/user/premium`;
+           }else{
+            
+                location.href = `${url}/expense`;
+           }
             
 
         }
@@ -39,7 +47,7 @@ document.getElementById('button').addEventListener('click',async()=>{
 
 document.getElementById('forgot').addEventListener('click',async()=>{
     
-    location.href =  'http://localhost:3000/forgotpassword';
+    location.href =  `${url}/forgotpassword`;
 
 
 

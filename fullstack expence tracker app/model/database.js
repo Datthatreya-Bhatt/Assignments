@@ -1,10 +1,10 @@
 const { Sequelize, DataTypes } = require('sequelize');
 require('dotenv').config();
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER_NAME,  process.env.SQL_PASSWORD, {
-  host: process.env.DB_HOST,
-  dialect: 'mysql',
-});
+const sequelize = require('../model/sequelize');
+
+
+
 
 const User = sequelize.define('user', {
   // Define the columns of the table

@@ -12,26 +12,27 @@
 //pm2 is just for fun 
 
 const path = require('path');
-
-const { Sequelize  } = require('sequelize');
-const {User} = require('../model/database'); 
-const {Expense} = require('../model/database');
-const {Orders} = require('../model/database');
-
-
 require('dotenv').config();
 
+const sequelize = require('../model/sequelize');
+const {User,Expense} = require('../model/database');
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER_NAME,  process.env.SQL_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
-  });
+
+
+
+
 
 //For showing expense page
 exports.getData= (req,res,next)=>{
     res.status(200).sendFile(path.join(__dirname,'../','public','expense.html'));
 
 };
+
+
+
+
+
+
 
 exports.getExpenseData = async (req,res,next)=>{
    
@@ -72,6 +73,10 @@ exports.getExpenseData = async (req,res,next)=>{
 
 
 };
+
+
+
+
 
 
 exports.postData = async (req,res,next)=>{
@@ -140,6 +145,12 @@ exports.postData = async (req,res,next)=>{
 
     }
 };
+
+
+
+
+
+
 
 exports.deleteData = async (req,res,next)=>{
     let id = req.userID;
@@ -245,9 +256,6 @@ catch(err){
 };
 
 
-
-
-
 };
 
 
@@ -256,29 +264,3 @@ catch(err){
 
 
 
-exports.isPremium = async(req,res,next)=>{
-    let id = req.userID;
-
-    try{
-
-        let data = await Orders.findOne({
-            where:{
-                userId: id,
-                status: 'SUCCESS'
-            }
-        })
-
-        if(data){
-            //res.send("PREMIUM");
-            res.redirect('/user/premium');
-            console.trace('Logging');
-            
-        }else{
-            console.log('NOT A PREMIUM USER');
-        }
-
-
-    }catch(err){
-        console.error(err);
-    }
-};

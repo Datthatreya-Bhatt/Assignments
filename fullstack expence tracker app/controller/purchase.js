@@ -1,15 +1,12 @@
 const Razorpay = require('razorpay');
-const { Sequelize } = require('sequelize');
-
-const {Orders} = require('../model/database');
-
 require('dotenv').config();
 
+const sequelize = require('../model/sequelize');
+const {Orders} = require('../model/database');
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER_NAME,  process.env.SQL_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
-  });
+
+
+
 
 exports.getPurchase = async(req,res,next)=>{
     const t = await sequelize.transaction();
@@ -70,6 +67,9 @@ exports.getPurchase = async(req,res,next)=>{
 };
 
 
+
+
+
 exports.postSuccess = async(req,res,next)=>{
     let order_id = req.body.res.razorpay_order_id;
     let payment_id = req.body.res.razorpay_payment_id;
@@ -105,6 +105,9 @@ exports.postSuccess = async(req,res,next)=>{
     }
     
 };
+
+
+
 
 
 exports.postFailed = async(req,res,next)=>{

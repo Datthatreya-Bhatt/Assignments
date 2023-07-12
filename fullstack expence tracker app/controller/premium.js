@@ -1,39 +1,72 @@
 const path = require('path');
 const AWS = require('aws-sdk');
-const { Sequelize  } = require('sequelize');
-
 require('dotenv').config();
 
+const sequelize = require('../model/sequelize');
 const {User, DownloadedFile,Expense} = require('../model/database');
 
 
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER_NAME,  process.env.SQL_PASSWORD, {
-  host: process.env.DB_HOST,
-  dialect: 'mysql',
-});
 
-//For showing expense page
+
+//For showing premium expense page
 exports.getPremiumPage = (req,res,next)=>{
     res.status(200).sendFile(path.join(__dirname,'../','public','premium.html'));
 
 };
 
+
+
+
+
+//to send leaderboard page
+exports.getLeaderboardPage = (req,res,next)=>{
+  res.status(200).sendFile(path.join(__dirname,'../','public','leaderboard.html'));
+
+};
+
+
+
+
+
+//to send leaderboard data
 exports.getLeaderBoard = async(req,res,next)=>{
-    
+  let id = req.userID;
+  let page = Number( req.params.page);
+  let limit = Number(req.query.limit);
+  
+
+
   try{
 
     
     let leaderBoard = await User.findAll({
       attributes:['name','total_expense'] ,
+      offset: (page-1)*limit,
+      limit: limit,
       order: [['total_expense', 'DESC']]
     });
     
   
+    let count = await User.count({
+      where: {
+        id: id
+      }
+    });
+    
+    count = Math.ceil(count/limit);
+    let obj = {
+        count: count,
+        page: page
+    }
 
+    if(leaderBoard){    
+      res.send({user: leaderBoard, obj: obj });
+    }
+    else{
+      res.send('fail');
+    }
 
-    res.send(leaderBoard);
-  
   }catch(err){
     console.error(err);
   }
@@ -78,7 +111,7 @@ async function uploadToS3(data,fileName){
 
       })
     })
-    /*,  */
+    
    
 
   }catch(err){
@@ -86,7 +119,6 @@ async function uploadToS3(data,fileName){
   }
 
 };
-
 
 
 
@@ -131,18 +163,44 @@ exports.downloadExpense = async(req,res,next)=>{
 
 
 
+//to send downloaded file data
 exports.downloadList = async(req,res,next)=>{
-
+  
   let id = req.userID;
+  let page = Number( req.params.page);
+  let limit = Number(req.query.limit);
+  
+  
+
   try{
     let list = await DownloadedFile.findAll({
       attributes: ['userId','links'],
+      offset: (page-1)*limit,
+      limit: limit,
       where: {
         userId: id
       }
     })
-    console.trace(list);
-    res.send(list);
+
+    let count = await DownloadedFile.count({
+      where: {
+          userId: id
+      }
+    });
+
+    count = Math.ceil(count/limit);
+    let obj = {
+        count: count,
+        page: page
+    }
+
+    if(list){
+      res.send({user: list, obj: obj });
+    }
+    else{
+      res.send('fail');
+    }
+    
   }catch(err){
     console.trace(err);
   }
@@ -152,6 +210,13 @@ exports.downloadList = async(req,res,next)=>{
 
 
 
+
+
+//to send downloaded file page
+exports.getDownloadedListPage = (req,res,next)=>{
+  res.status(200).sendFile(path.join(__dirname,'../','public','downloadlist.html'));
+
+};
 
 
 

@@ -1,19 +1,11 @@
-.container{
-    width: 100%;
-    border: 1px solid black;
-    display: grid;
-    grid-template-rows: 100px 100px 100px 100px  100px;    
-    grid-template-columns: 100px 100px 100px 100px 100px ;
-   
-}
-form{
-    border: 1px solid black;
+.my-color{
+    background-color: #788bff;
 }
 
-.item{
-    grid-area: 3/4/3/4;
+.text-color{
+    color: white;
 }
 
-body{
-    background-color: blue;
+footer{
+    background-color: #bfd7ff;
 }

@@ -1,24 +1,26 @@
 const path = require('path');
-require('dotenv').config();
 const Sib = require('sib-api-v3-sdk');
 const {v4: uuid } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { Sequelize  } = require('sequelize');
+require('dotenv').config();
 
+
+const sequelize = require('../model/sequelize');
 const {User,FPR} = require('../model/database');
 
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER_NAME,  process.env.SQL_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
-  });
+
+
+
 
 //For showing forgotpassword page
 exports.getforgotpasswordPage = (req,res,next)=>{
     res.status(200).sendFile(path.join(__dirname,'../','public','forgotpassword.html'));
 
 };
+
+
 
 
 
@@ -94,6 +96,8 @@ exports.getEmail = async (req,res,next)=>{
 
 
 
+
+
 exports.getResetPage = async(req,res,next)=>{
     let uid = req.params.id;
 
@@ -118,6 +122,10 @@ exports.getResetPage = async(req,res,next)=>{
 
 
 };
+
+
+
+
 
 exports.postResetPas = async(req,res,next)=>{
     let uid = req.params.id;
