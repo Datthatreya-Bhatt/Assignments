@@ -2,6 +2,10 @@ import {Router} from 'express';
 
 import {Todo} from '../models/todo';
 
+type RequestBody = {text: string};
+type RequestParams = {id: string};
+
+
 let todo : Todo[] = [];
 
 const router = Router();
@@ -11,9 +15,10 @@ router.get('/', (req,res,next)=>{
 });
 
 router.post('/todo',(req,res,next)=>{
+    const body = req.body as RequestBody; 
     const newTodo: Todo = {
         id: new Date().toISOString(),
-        text: req.body.text
+        text: body.text
     }
 
     todo.push(newTodo);
@@ -23,17 +28,19 @@ router.post('/todo',(req,res,next)=>{
 
 
 router.delete('/delete/:id',(req,res,next)=>{
-    let id = req.params.id; 
-    todo = todo.filter(todoItem => todoItem.id !== req.params.id);
+    const params = req.params as RequestParams;
+    todo = todo.filter(todoItem => todoItem.id !== params.id);
     res.status(200).send('deleted');
 })
 
 
 router.put('/edit/:id',(req,res,next)=>{
-    const tid = req.params.id;
+    const params = req.params as RequestParams;
+    const tid = params.id;
+    const body = req.body as RequestBody;
     const todoIndex = todo.findIndex(todoItem => todoItem.id === tid);
     if(todoIndex >= 0){
-        todo[todoIndex] = {id: todo[todoIndex].id, text: req.body.text};
+        todo[todoIndex] = {id: todo[todoIndex].id, text: body.text};
         return res.status(201).send('todos updated');
     }
 
