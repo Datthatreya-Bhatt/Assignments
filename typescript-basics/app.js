@@ -1,39 +1,17 @@
 "use strict";
-const num1Element = document.getElementById('inp1');
-const num2Element = document.getElementById('inp2');
-const buttonElement = document.querySelector('button');
-const numResults = [];
-const textResults = [];
-function add(num1, num2) {
-    if (typeof num1 === 'number' && typeof num2 === 'number') {
-        return num1 + num2;
-    }
-    else if (typeof num1 === 'string' && typeof num2 === 'string') {
-        return num1 + ' ' + num2;
-    }
-    else {
-    }
-}
-function printResult(resultObj) {
-    console.log(resultObj.val);
-}
-buttonElement.addEventListener('click', () => {
-    const num1 = num1Element.value;
-    const num2 = num2Element.value;
-    const result = add(+num1, +num2);
-    numResults.push(result);
-    const stringResult = add(num1, num2);
-    textResults.push(stringResult);
-    printResult({ val: result, timestamp: new Date() });
-    console.log(numResults, textResults);
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const body_parser_1 = __importDefault(require("body-parser"));
+const cors_1 = __importDefault(require("cors"));
+const todos_1 = __importDefault(require("./routes/todos"));
+const app = (0, express_1.default)();
+app.use((0, cors_1.default)());
+app.use(body_parser_1.default.json());
+app.use(todos_1.default);
+app.use('/', (req, res, next) => {
+    res.status(404).send('page not found');
 });
-const myPromise = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve('It worked');
-    }, 1000);
-});
-myPromise.then((result) => {
-    console.log(result.split('w'));
-});
-
-
+app.listen(3000);
