@@ -4,7 +4,7 @@ let url = 'http://localhost:3000';
 let token = localStorage.getItem('token');
 axios.defaults.headers.common['Authorization'] = token;
 
-
+let expenseFileCount = 1;
 
 window.onload = async()=>{
     try{
@@ -229,7 +229,7 @@ function loop(res){
 
             let a = document.createElement('a');
             a.href = links;
-            a.innerHTML = `Expense-file-${i+1}`;
+            a.innerHTML = `Expense-file-${expenseFileCount++}`;
             
 
             td1.innerHTML = `${i+1}`;

@@ -15,6 +15,11 @@ const premium = require('./routes/premium');
 const forgotpassword = require('./routes/forgotpassword');
 
 const app = express();
+app.use(function(req, res, next) {
+    res.removeHeader("Content-Security-Policy");
+    next();
+});
+
 app.use(cors());
 
 app.use(express.static('public'));
@@ -24,7 +29,7 @@ app.use(parser.json());
 
 const logFile = fs.createWriteStream(path.join(__dirname, 'logFile.log'), {flag: 'a'});
 
-//app.use(helmet());
+//app.use(helmet({ contentSecurityPolicy: false }));
 app.use(morgan('combined', {stream: logFile}));
 
 app.use(user);

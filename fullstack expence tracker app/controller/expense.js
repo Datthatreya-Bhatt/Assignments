@@ -1,16 +1,3 @@
-//Change all url name to our aws url in frintend js file
-
-// __/\\\\\\\\\\\\\____/\\\\____________/\\\\____/\\\\\\\\\_____
-//  _\/\\\/////////\\\_\/\\\\\\________/\\\\\\__/\\\///////\\\___
-//   _\/\\\_______\/\\\_\/\\\//\\\____/\\\//\\\_\///______\//\\\__
-//    _\/\\\\\\\\\\\\\/__\/\\\\///\\\/\\\/_\/\\\___________/\\\/___
-//     _\/\\\/////////____\/\\\__\///\\\/___\/\\\________/\\\//_____
-//      _\/\\\_____________\/\\\____\///_____\/\\\_____/\\\//________
-//       _\/\\\_____________\/\\\_____________\/\\\___/\\\/___________
-//        _\/\\\_____________\/\\\_____________\/\\\__/\\\\\\\\\\\\\\\_
-//         _\///______________\///______________\///__\///////////////__
-//pm2 is just for fun 
-
 const path = require('path');
 require('dotenv').config();
 
@@ -18,6 +5,7 @@ const sequelize = require('../model/sequelize');
 const {User,Expense} = require('../model/database');
 
 
+const SequelizeService = require('../services/sequelizeService');
 
 
 
@@ -42,14 +30,14 @@ exports.getExpenseData = async (req,res,next)=>{
     
     try{
 
-        const user = await Expense.findAll({
+        const user = await SequelizeService.FindAllService(Expense,{
             offset: (page-1)*limit,
             limit: limit,
             where:{
                 userId:id
             }
         });
-        let count = await Expense.count({
+        let count = await SequelizeService.CountService(Expense,{
             where: {
                 userId: id
             }
@@ -88,7 +76,7 @@ exports.postData = async (req,res,next)=>{
         try{
 
             //updating expense table
-            const expense = await Expense.create(
+            const expense = await SequelizeService.CreateService(Expense,
                 {
                     amount:amount,
                     description:description,
@@ -110,7 +98,7 @@ exports.postData = async (req,res,next)=>{
 
 
             //updating user table
-            let user = await User.findOne({
+            let user = await SequelizeService.FindOneService(User,{
                 attributes: ['id','total_expense'],
                 where:{
                     id: id
@@ -121,22 +109,19 @@ exports.postData = async (req,res,next)=>{
 
             let ex = Number(user.total_expense)  + Number(amount);
 
-            let update = await User.update({
+            let update = await SequelizeService.UpdateService(User,{
                 total_expense: ex
             },{
                 where: {
                     id: id
                 },
-                transaction: t
+               transaction: t
                 
             })
 
             if(update){
-                await t.commit();
+               await t.commit();
             }
-
-
-
 
         }catch(err){
             console.error(err);
@@ -156,52 +141,30 @@ exports.deleteData = async (req,res,next)=>{
     let id = req.userID;
     let entry = req.params.id;
     const t = await sequelize.transaction();
-    let amount = 0;
- try{
-
-    //for getting amount from Expense table
     try{
 
-        let data  = await Expense.findOne({
+        //for getting amount from Expense table
+        let data  = await SequelizeService.FindOneService(Expense,{
             attributes:['amount'],
             where:{
                 userId:id,
                 id:entry
             }
-        });
+            });
 
-        //for getting data from user table
-
-        let data2 = await User.findOne({
+            
+        //for getting total-expense from user table
+        let data2 = await SequelizeService.FindOneService(User,{
             attributes: ['total_expense'],
             where: {
                 id: id
             }
         })
 
-        amount = Number(data2.total_expense) - Number(data.amount);
+        let amount = Number(data2.total_expense) - Number(data.amount);
 
-        if(data && data2){
-            //console.log('no error');
-        }
-        else{
-            console.error('error in delete');
-        }
-
-
-    }catch(err){
-        console.error(err);
-       
-    }
-
-
-    
-
-    //for updating database
-    try{
-
-         
-        const user = await User.update({
+        //for updating total-expense in user table
+        const user = await SequelizeService.UpdateService(User,{
             total_expense: amount
         },{
             where:{
@@ -209,22 +172,9 @@ exports.deleteData = async (req,res,next)=>{
             },
             transaction:t
         })
-
-        if(user){
-           console.log('success');
-        }
-
-    }catch(err){
-        console.error(err);
-      
-    }
-
-
-
-    
-    //for deleting from database
-    try{
-        const user = await Expense.destroy({
+        
+        //for deleting data from expense table
+        const user2 = await SequelizeService.DeleteService(Expense,{
             where:{
                 userId:id,
                 id:entry
@@ -234,26 +184,19 @@ exports.deleteData = async (req,res,next)=>{
 
         if(user){
             res.send('success');
-           
+            
         }else{
             res.send('fail');
         }
 
+        await t.commit();
+
     }
     catch(err){
         console.error(err);
-      
+        await t.rollback();
+    
     };
-
-
-    await t.commit();
-
-}
-catch(err){
-    console.error(err);
-    await t.rollback();
-  
-};
 
 
 };

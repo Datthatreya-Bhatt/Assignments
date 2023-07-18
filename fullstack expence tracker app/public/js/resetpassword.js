@@ -19,7 +19,7 @@ document.getElementById('button').addEventListener('click',async()=>{
         password: pas
     })
     console.log(res);
-    if(res.data === 'success'){
+    if(res.data){
         alert('password reset complete');
     }
 });

@@ -3,10 +3,11 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-
 const sequelize = require('../model/sequelize');
 const {User,Orders} = require('../model/database');
 
+
+const SequelizeService = require('../services/sequelizeService');
 
 
 
@@ -29,16 +30,15 @@ exports.postData = async(req,res,next)=>{
     if(name.length>0 && email.length>0 && password.length>0){
         //To check if email exists
         try {
-            const user = await User.findOne({
-              where: {
-                email: email,
-              },
-              attributes: ['email'],
-            });
+            const user = await SequelizeService.FindOneService(User, {
+                where: {
+                  email: email,
+                },
+                attributes: ['email'],
+              });
 
             if (user) {
                 res.send('fail');
-                const email = user.email;
                 
             }
             else {
@@ -46,15 +46,14 @@ exports.postData = async(req,res,next)=>{
                 console.log('No user found with the input email');
 
                 //creating new user
-              
                 bcrypt.hash(password,Number(process.env.SALT_ROUND),async(err,hash)=>{
                     if(err){
-                        console.error('enryption error',err);
+                        console.trace('enryption error',err);
                     }
                     else{
                         try {
                             
-                            const user = await User.create({
+                            const user = await SequelizeService.CreateService(User,{
                               name: name,
                               email: email,
                               password: hash,
@@ -91,7 +90,7 @@ exports.postData = async(req,res,next)=>{
 
 //to show login page for old users
 exports.getlogin = (req,res,next)=>{
-    res.sendFile(path.join(__dirname,'../','public','login.html'));
+    res.status(201).sendFile(path.join(__dirname,'../','public','login.html'));
 };
 
 
@@ -100,10 +99,9 @@ exports.getlogin = (req,res,next)=>{
 
 isPremium = async(req,res,next)=>{
     let id = req.userID;
-
     try{
 
-        let data = await Orders.findOne({
+        let data = await SequelizeService.FindOneService(Orders,{
             where:{
                 userId: id,
                 status: 'SUCCESS'
@@ -135,7 +133,7 @@ exports.postlogin = async(req,res,next)=>{
     //to check password and email
 
     try{
-        const user = await User.findOne({
+        const user = await SequelizeService.FindOneService(User,{
             where:{
                 email: email 
             }
@@ -145,29 +143,15 @@ exports.postlogin = async(req,res,next)=>{
             let hash = user.dataValues.password;
             bcrypt.compare(password,hash,async(err,result)=>{
                if(result){
-                    try{
-                        const user = await User.findOne({
-                            where:{
-                                password:hash
-                            }
-                        })
-                        if(user){
-                            let id = user.dataValues.id;
-                            let token = jwt.sign({id:id},process.env.JWT_S_KEY);
+  
+                    let id = user.dataValues.id;
+                    let token = jwt.sign({id:id},process.env.JWT_S_KEY);
 
-                            req.userID = id;
-                            
-                            let ispremium = await isPremium(req,res);
-
-                            res.status(201).send({token: token, ispremium: ispremium});
-                            
-                        }else{
-                            console.trace('error at postlogin')
-                        }
-                    }catch(err){
-                        res.status(500);
-                        console.trace(err);
-                    }
+                    req.userID = id;
+                    
+                    let ispremium = await isPremium(req,res);
+                   
+                    res.status(201).send({token: token, ispremium: ispremium});
                     
                }
                else if(err){
@@ -183,7 +167,7 @@ exports.postlogin = async(req,res,next)=>{
              res.send('incorrect');
         }
         else{
-            res.status(500).send('error');
+            res.send('error');
             console.trace(err);
         }
 

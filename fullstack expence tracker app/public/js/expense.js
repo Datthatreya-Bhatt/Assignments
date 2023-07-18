@@ -10,7 +10,6 @@ window.onload = async()=>{
         console.log(res);
         loop(res);
         
-
     }catch(err){
         console.log(err);
     }
@@ -261,7 +260,7 @@ function loop(res){
             btn.addEventListener('click',async()=>{
                 try{
                     let res = await axios.delete(`${url}/expense/${id}`)
-                    li.parentNode.removeChild(li);
+                    td5.parentNode.removeChild(td5);
                     location.reload();
                 }catch(err){
                     console.log(err);

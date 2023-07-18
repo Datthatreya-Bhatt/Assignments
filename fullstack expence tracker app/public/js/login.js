@@ -9,6 +9,7 @@ document.getElementById('button').addEventListener('click',async()=>{
             email: email,
             password: password
         })
+        console.log(res,res.data.data);
             
         if(res.data === 'incorrect'){
             alert('Email or Password is incorrect');
