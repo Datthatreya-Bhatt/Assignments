@@ -1,4 +1,4 @@
-let url = 'http://localhost:3000';
+let url = 'http://54.208.165.234';
 
 
 let token = localStorage.getItem('token');
