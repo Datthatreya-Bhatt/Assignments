@@ -26,7 +26,7 @@ exports.SibService = async (email,uid)=>{
             sender,
             to: receivers,
             subject: 'test',
-            textContent: `http://localhost:3000/password/resetpassword/${uid}`
+            textContent: `http://54.208.165.234/password/resetpassword/${uid}`
         })
 
         return emailRes;
