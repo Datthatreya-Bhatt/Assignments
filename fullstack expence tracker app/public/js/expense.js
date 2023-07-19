@@ -1,7 +1,8 @@
 let token = localStorage.getItem('token');
 axios.defaults.headers.common['Authorization'] = token;
 
-let url = 'http://54.208.165.234';
+//let url = 'http://54.208.165.234';
+let url = 'http://localhost:3000';
 
 
 
