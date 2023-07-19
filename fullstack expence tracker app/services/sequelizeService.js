@@ -1,8 +1,3 @@
-const sequelize = require('../model/sequelize');
-//const {User,Expense,Orders,FPR,DownloadedFile} = require('../model/database');
-//const database = require('../model/database');
-
-
 
 exports.FindOneService = async (database,obj)=>{
     let res = await database.findOne(obj);

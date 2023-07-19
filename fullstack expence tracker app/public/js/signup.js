@@ -1,5 +1,5 @@
-let url = 'http://54.208.165.234';
-//let url = 'http://localhost:3000';
+//let url = 'http://54.208.165.234';
+let url = 'http://localhost:3000';
 
 
 document.getElementById('button').addEventListener('click',async(e)=>{
