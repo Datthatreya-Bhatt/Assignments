@@ -25,17 +25,18 @@ app.get('/login', (req, res) => {
 app.post('/', (req, res) => {
   const username = req.body.username;
   const message = req.body.message;
-  if(message === undefined){
-
-  }
-  else{
-    fs.writeFileSync('message.txt'," "+message+" :",{flag:'a+'},err=>console.log(err));
-  }
+  
   if(username === undefined){
 
   }
   else{
     fs.writeFileSync('message.txt',username+"->",{flag:'a+'},err => console.log(err));
+  }
+  if(message === undefined){
+
+  }
+  else{
+    fs.writeFileSync('message.txt'," "+message+" :",{flag:'a+'},err=>console.log(err));
   }
   console.log(username);
   const data = fs.readFileSync('message.txt','utf-8');
@@ -44,8 +45,15 @@ app.post('/', (req, res) => {
     <h1>${data}</h1>
     <form method="post" action="/">
       <input type="text" name="message"/>
+      <input type="hidden" name="username" id="username"/>
       <button type="submit" id="btn">Send</button>
     </form>
+    <script>
+    document.getElementById("btn").addEventListener('click',()=>{
+      let username = localStorage.getItem('username');
+      document.getElementById("username").value = username;
+    }
+    </script>
   `);
  
 });

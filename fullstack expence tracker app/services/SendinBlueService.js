@@ -1,5 +1,5 @@
 const Sib = require('sib-api-v3-sdk');
-
+require('dotenv').config();
 
 const client = Sib.ApiClient.instance;
 
